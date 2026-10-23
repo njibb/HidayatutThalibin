@@ -414,13 +414,22 @@ export default function PolaroidLineCarousel({
         <path ref={pathRef} fill="none" stroke={string} strokeWidth="1.5" strokeLinecap="round" />
       </svg>
       {slides.map((sl, i) => (
-        <div key={i} className="pl-card" data-i={i} data-on={i === active ? "1" : "0"} ref={(el) => void (cards.current[i] = el)} aria-hidden={i === active ? undefined : true}>
-          <div className="pl-print">
-            <div className="pl-shot">{srcs[i] ? <img src={srcs[i]} alt={sl.alt || sl.title || ""} draggable={false} /> : null}</div>
-            <div className="pl-note">{sl.title || ""}</div>
-          </div>
-          <div className="pl-peg" />
-        </div>
+       <div key={i} className="pl-card" data-i={i} data-on={i === active ? "1" : "0"} ref={(el) => void (cards.current[i] = el)} aria-hidden={i === active ? undefined : true}>
+  <div className="pl-print">
+    <div className="pl-shot" style={{ width: "100%", height: "100%", overflow: "hidden", position: "relative" }}>
+      {srcs[i] ? (
+        <img 
+          src={srcs[i]} 
+          alt={sl.alt || sl.title || ""} 
+          draggable={false} 
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        />
+      ) : null}
+    </div>
+    <div className="pl-note">{sl.title || ""}</div>
+  </div>
+  <div className="pl-peg" />
+</div>
       ))}
       <div className="pl-bar">
         <div className="pl-cap" key={active} aria-hidden="true">
