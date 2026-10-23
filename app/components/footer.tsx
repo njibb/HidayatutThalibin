@@ -1,3 +1,7 @@
+"use client"; // Tambahkan ini jika di dalam komponen ada interaksi client-side, atau hapus jika murni server component (aman dihapus untuk footer statis, tapi biarkan saja jika sebelumnya ada)
+
+import Link from 'next/link';
+
 interface FooterProps {
   theme?: "warm" | "emerald" | "blue" | "amber" | "purple";
 }
@@ -72,7 +76,7 @@ export default function Footer({ theme = "emerald" }: FooterProps) {
           <div className={`space-y-3 pt-2 text-sm ${t.textSub}`}>
             <div className="flex items-start gap-3">
               <span className={`${t.accent} mt-0.5`}>📍</span>
-              <span>Jl. Pendidikan No. X, Yayasan Hidayatut Thalibin, Indonesia</span>
+              <span>Alamat Pusat: Jl Cilandak Tengah III/53 RT.001/001 Cilandak Barat, Jakarta Selatan 12430</span>
             </div>
             <div className="flex items-center gap-3">
               <span className={t.accent}>✉️</span>
@@ -89,30 +93,31 @@ export default function Footer({ theme = "emerald" }: FooterProps) {
           <div>
             <h4 className="text-white font-semibold text-sm mb-4 tracking-wider uppercase">Unit Sekolah</h4>
             <ul className={`space-y-3 text-sm ${t.textSub}`}>
-              <li><a href="/tk" className="hover:text-white transition-colors">TK Hidayatut Thalibin</a></li>
-              <li><a href="/mi" className="hover:text-white transition-colors">MI Hidayatut Thalibin</a></li>
-              <li><a href="/mts" className="hover:text-white transition-colors">MTs Hidayatut Thalibin</a></li>
-              <li><a href="/smk" className="hover:text-white transition-colors">SMK Hidayatut Thalibin</a></li>
+              {/* Diubah menjadi Link */}
+              <li><Link href="/tk" className="hover:text-white transition-colors">TK Hidayatut Thalibin</Link></li>
+              <li><Link href="/mi" className="hover:text-white transition-colors">MI Hidayatut Thalibin</Link></li>
+              <li><Link href="/mts" className="hover:text-white transition-colors">MTs Hidayatut Thalibin</Link></li>
+              <li><Link href="/smk" className="hover:text-white transition-colors">SMK Hidayatut Thalibin</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-white font-semibold text-sm mb-4 tracking-wider uppercase">Akademik</h4>
             <ul className={`space-y-3 text-sm ${t.textSub}`}>
-              <li><a href="#profil" className="hover:text-white transition-colors">Profil Singkat</a></li>
-              <li><a href="#unit" className="hover:text-white transition-colors">Program Belajar</a></li>
-              <li><a href="/ppdb" className="hover:text-white transition-colors">PPDB Online</a></li>
-              <li><a href="#kontak" className="hover:text-white transition-colors">Kalender Akademik</a></li>
+              <li><Link href="#profil" className="hover:text-white transition-colors">Profil Singkat</Link></li>
+              <li><Link href="#unit" className="hover:text-white transition-colors">Program Belajar</Link></li>
+              <li><Link href="/ppdb" className="hover:text-white transition-colors">PPDB Online</Link></li>
+              <li><Link href="#kontak" className="hover:text-white transition-colors">Kalender Akademik</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-white font-semibold text-sm mb-4 tracking-wider uppercase">Informasi</h4>
             <ul className={`space-y-3 text-sm ${t.textSub}`}>
-              <li><a href="#" className="hover:text-white transition-colors">Fasilitas</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Galeri & Berita</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Prestasi Siswa</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Tentang Kami</a></li>
+              <li><Link href="#" className="hover:text-white transition-colors">Fasilitas</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">Galeri & Berita</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">Prestasi Siswa</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">Tentang Kami</Link></li>
             </ul>
           </div>
         </div>
@@ -122,9 +127,9 @@ export default function Footer({ theme = "emerald" }: FooterProps) {
       <div className={`max-w-7xl mx-auto border-t pt-8 relative z-10 flex flex-col sm:flex-row items-center justify-between text-xs gap-4 ${t.borderBottom}`}>
         <p>&copy; 2026 Yayasan Hidayatut Thalibin. All rights reserved.</p>
         <div className="flex items-center gap-6">
-          <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-white transition-colors">Term & Condition</a>
-          <a href="#" className="hover:text-white transition-colors">Cookies</a>
+          <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
+          <Link href="#" className="hover:text-white transition-colors">Term & Condition</Link>
+          <Link href="#" className="hover:text-white transition-colors">Cookies</Link>
         </div>
       </div>
 

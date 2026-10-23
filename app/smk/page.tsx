@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import { useState, useEffect } from 'react';
 import UnitNavbar from '@/app/components/unit/unitnavbar';
 import UnitHero from '@/app/components/unit/unithero';
 import UnitProfile from '@/app/components/unit/unitprofile';
@@ -11,23 +14,81 @@ import Footer from '@/app/components/footer';
 import ChatbotWidget from '@/app/components/chatbotwidget';
 import ScrollReveal from '@/app/components/scrollreveal'; 
 import { smkData } from '@/app/data/smkdata';
-import { smkAgendaData } from '@/app/data/smkagendadata';
+
+// Komponen mandiri untuk meload data struktur organisasi dari Database Admin CMS (Khusus SMK)
+function DynamicUnitStruktur() {
+  const [strukturData, setStrukturData] = useState({
+    pimpinanPuncak: { name: "Memuat...", role: "Pimpinan" },
+    komite: undefined as { name: string; role: string } | undefined,
+    wakilDanTu: [] as { name: string; role: string }[],
+    waliKelas: [] as { name: string; role: string }[]
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStruktur = async () => {
+      try {
+        // Tembak proxy structure dengan unit 'smk'
+        const response = await fetch('/api/proxy-structure/smk', { cache: 'no-store' });
+        const result = await response.json();
+
+        if (response.ok && result.status === 1) {
+          const data = result.data;
+          const mapToProp = (item: any) => ({ name: item.nama, role: item.jabatan });
+
+          const pimpinan = data.find((i: any) => i.kategori === 'pimpinan');
+          const komite = data.find((i: any) => i.kategori === 'komite');
+          const wakil = data.filter((i: any) => i.kategori === 'wakil_tu').map(mapToProp);
+          const wali = data.filter((i: any) => i.kategori === 'walikelas').map(mapToProp);
+
+          setStrukturData({
+            pimpinanPuncak: pimpinan ? mapToProp(pimpinan) : { name: "Belum Diisi", role: "Kepala SMK" },
+            komite: komite ? mapToProp(komite) : undefined,
+            wakilDanTu: wakil,
+            waliKelas: wali
+          });
+        }
+      } catch (error) {
+        console.error("Gagal meload struktur publik SMK:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStruktur();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="py-24 text-center text-gray-400 font-medium text-sm animate-pulse">
+        Memuat bagan struktur kepengurusan...
+      </div>
+    );
+  }
+
+  return (
+    <UnitStruktur 
+      theme="purple"
+      pimpinanPuncak={strukturData.pimpinanPuncak}
+      komite={strukturData.komite}
+      wakilDanTu={strukturData.wakilDanTu}
+      waliKelas={strukturData.waliKelas}
+    />
+  );
+}
 
 export default function SMKPage() {
   return (
     <main className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
-      {/* Navbar dengan tema Unggu (Purple) */}
       <UnitNavbar unitName={smkData.shortName} unitCode={smkData.code} theme="purple" />
       
-      {/* Hero Section */}
       <UnitHero 
         name={smkData.name} 
         tagline={smkData.tagline} 
-        bgImage="/unit-smk.jpg"      
+        bgImage="/unit-smk.jpg"       
         theme="purple"
       />
       
-      {/* Profil Sekolah */}
       <ScrollReveal>
         <div id="profil">
           <UnitProfile 
@@ -39,7 +100,6 @@ export default function SMKPage() {
         </div>
       </ScrollReveal>
 
-      {/* Program Keahlian / Unggulan */}
       <ScrollReveal delay={0.1}>
         <UnitProgram 
           programs={smkData.excellencePrograms} 
@@ -48,53 +108,38 @@ export default function SMKPage() {
         />
       </ScrollReveal>
 
-      {/* Struktur Organisasi */}
+      {/* Struktur Organisasi Dinamis SMK */}
       <ScrollReveal>
         <div id="struktur">
-          <UnitStruktur 
-            theme="purple"
-            pimpinanPuncak={{ name: "Dr. H. M. Ichsan, M.Pd.", role: "Kepala SMK" }}
-            komite={{ name: "Ir. H. Budi Santoso", role: "Ketua Komite" }}
-            wakilDanTu={[
-              { name: "Dra. Hj. Nuraini", role: "Bid. Kurikulum" },
-              { name: "Arief Rahman, S.Kom.", role: "Bid. Hubin / Humas" },
-              { name: "Dewi Lestari, S.E.", role: "Kepala TU" },
-            ]}
-            waliKelas={[
-              { name: "Rian Hidayat, S.T.", role: "Kaprog. Teknik Komputer" },
-              { name: "Siti Rahma, S.Pd.", role: "Kaprog. Manajemen Perkantoran" },
-            ]}
-          />
+          <DynamicUnitStruktur />
         </div>
       </ScrollReveal>
 
-      {/* Fasilitas Sekolah */}
       <ScrollReveal>
         <div id="fasilitas">
           <UnitFasilitas facilities={smkData.facilities} theme="purple" />
         </div>
       </ScrollReveal>
 
-      {/* Berita & Galeri Polaroid */}
+      {/* Berita & Galeri Polaroid Dinamis (Kirim unitCode="smk") */}
       <ScrollReveal>
         <div id="berita">
-          <UnitGaleri theme="purple" />
+          <UnitGaleri unitCode="smk" theme="purple" />
         </div>
       </ScrollReveal>
 
-      {/* Kalender Akademik */}
+      {/* Kalender Akademik Dinamis (Kirim unitCode="smk") */}
       <ScrollReveal>
         <div id="kalender">
-          <UnitJadwalKalenderAkademik agendaList={smkAgendaData as any} theme="purple" />
+          <UnitJadwalKalenderAkademik unitCode="smk" theme="purple" />
         </div>
       </ScrollReveal>
 
-      {/* Footer */}
       <ScrollReveal>
         <Footer theme="purple" />
       </ScrollReveal>
 
-      <ChatbotWidget />
+      <ChatbotWidget theme="purple"/>
     </main>
   );
 }

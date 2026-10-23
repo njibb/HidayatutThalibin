@@ -1,34 +1,27 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Badge } from "../ui/badge";
 import { Calendar as CalendarIcon, Clock, ChevronLeft, ChevronRight, Info } from "lucide-react";
-import { cn } from "../lib/utils";
+import { cn } from "@/app/lib/utils";
 
-export interface AgendaItem {
-  id?: string;
+export interface DBAgendaItem {
+  _id?: string;
   title: string;
-  date: string;
-  bulan: string;
-  day?: number;
-  category: string;
+  startDate: string;
+  endDate: string;
+  kategori: string;
   description?: string;
-  kegiatan?: string;
-  keterangan?: string;
+  unitCode?: string;
 }
 
 interface UnitJadwalKalenderAkademikProps {
-  agendaList: AgendaItem[];
+  unitCode?: string; // e.g. "tk", "mi", "mts", "smk"
   theme?: "emerald" | "blue" | "amber" | "purple" | "warm";
 }
 
-export default function UnitJadwalKalenderAkademik({ agendaList, theme = "blue" }: UnitJadwalKalenderAkademikProps) {
-  const listBulan = [
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "July", "Agustus", "September", "Oktober", "November", "Desember"
-  ];
-  // Perbaikan nama bulan standar
+export default function UnitJadwalKalenderAkademik({ unitCode = "tk", theme = "blue" }: UnitJadwalKalenderAkademikProps) {
   const fixedListBulan = [
     "Januari", "Februari", "Maret", "April", "Mei", "Juni",
     "Juli", "Agustus", "September", "Oktober", "November", "Desember"
@@ -36,6 +29,33 @@ export default function UnitJadwalKalenderAkademik({ agendaList, theme = "blue" 
 
   const [selectedBulan, setSelectedBulan] = useState("September");
   const [tahun, setTahun] = useState(2026);
+  const [rawAgendas, setRawAgendas] = useState<DBAgendaItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch data agenda dari Admin Backend API (bisa diganti URL hosting nanti)
+  useEffect(() => {
+    const fetchAgendas = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/proxy-agenda/${unitCode}`);
+        const result = await response.json();
+        
+        // --- CEK INI DI BROWSER CONSOLE ---
+        console.log("UNIT CODE YANG DIMINTA:", unitCode);
+        console.log("DATA AGENDA DARI DATABASE:", result.data);
+        
+        if (response.ok && result.status === 1) {
+          setRawAgendas(result.data || []);
+        }
+      } catch (error) {
+        console.error("Gagal memuat agenda publik dari admin:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAgendas();
+  }, [unitCode]);
 
   const getMonthIndex = (bulanStr: string) => {
     const map: Record<string, number> = {
@@ -49,16 +69,43 @@ export default function UnitJadwalKalenderAkademik({ agendaList, theme = "blue" 
   const firstDayOfMonth = new Date(tahun, monthIndex, 1).getDay();
   const totalDaysInMonth = new Date(tahun, monthIndex + 1, 0).getDate();
 
-  const activeAgendas = agendaList.filter(
-    (item) => item.bulan.toLowerCase() === selectedBulan.toLowerCase()
-  );
+  // Filter agenda yang aktif/beririsan dengan bulan & tahun yang dipilih
+  const monthStart = new Date(tahun, monthIndex, 1);
+  monthStart.setHours(0, 0, 0, 0);
+  const monthEnd = new Date(tahun, monthIndex + 1, 0);
+  monthEnd.setHours(23, 59, 59, 999);
 
+  const activeAgendas = rawAgendas.filter((item) => {
+    const start = new Date(item.startDate);
+    const end = new Date(item.endDate);
+    return start <= monthEnd && end >= monthStart;
+  });
+
+  // Cek apakah suatu hari di kalender masuk ke dalam rentang agenda
   const getAgendaForDay = (day: number) => {
-    return activeAgendas.filter((item) => {
-      if (item.day) return item.day === day;
-      const regex = new RegExp(`\\b${day}\\b`);
-      return regex.test(item.date);
+    const currentDate = new Date(tahun, monthIndex, day);
+    currentDate.setHours(0, 0, 0, 0);
+
+    return rawAgendas.filter((item) => {
+      const start = new Date(item.startDate);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(item.endDate);
+      end.setHours(23, 59, 59, 999);
+
+      return currentDate >= start && currentDate <= end;
     });
+  };
+
+  // Helper Format Tanggal Rentang untuk ditampilkan di Timeline Kanan
+  const formatDateRange = (startStr: string, endStr: string) => {
+    const opt: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+    const startDate = new Date(startStr);
+    const endDate = new Date(endStr);
+    
+    if (startDate.toDateString() === endDate.toDateString()) {
+      return startDate.toLocaleDateString('id-ID', opt);
+    }
+    return `${startDate.toLocaleDateString('id-ID', opt)} s/d ${endDate.toLocaleDateString('id-ID', opt)}`;
   };
 
   // Konfigurasi Tema Warna Kalender
@@ -239,27 +286,29 @@ export default function UnitJadwalKalenderAkademik({ agendaList, theme = "blue" 
             </div>
 
             <div className="space-y-4 max-h-[360px] overflow-y-auto pr-1">
-              {activeAgendas.length > 0 ? (
+              {isLoading ? (
+                <div className="text-center py-16 text-gray-400 text-xs">Memuat agenda...</div>
+              ) : activeAgendas.length > 0 ? (
                 activeAgendas.map((item, idx) => (
-                  <div key={item.id || idx} className={`relative pl-5 border-l-2 ${ts.timelineBorder} py-1 group`}>
+                  <div key={item._id || idx} className={`relative pl-5 border-l-2 ${ts.timelineBorder} py-1 group`}>
                     <div className={`absolute -left-[7px] top-1.5 h-3 w-3 rounded-full ${ts.timelineDot} border-2 border-white shadow-sm`} />
                     
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold text-gray-600 mb-0.5">
-                      <Clock className="h-3 w-3" /> {item.date}
+                      <Clock className="h-3 w-3" /> {formatDateRange(item.startDate, item.endDate)}
                     </span>
                     <h5 className={`font-bold text-gray-900 text-sm leading-snug ${ts.hoverText} transition-colors`}>
-                      {item.title || item.kegiatan}
+                      {item.title}
                     </h5>
-                    {(item.description || item.keterangan) && (
+                    {item.description && (
                       <p className="text-[11px] text-gray-500 mt-0.5 italic">
-                        {item.description || item.keterangan}
+                        {item.description}
                       </p>
                     )}
                   </div>
                 ))
               ) : (
                 <div className="text-center py-16">
-                  <p className="text-gray-400 text-xs">Tidak ada agenda kegiatan pada bulan {selectedBulan}.</p>
+                  <p className="text-gray-400 text-xs">Tidak ada agenda kegiatan pada bulan {selectedBulan} {tahun}.</p>
                 </div>
               )}
             </div>

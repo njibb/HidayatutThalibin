@@ -75,7 +75,7 @@ export default function Navbar() {
                   className={`
                     px-3.5 py-1.5 rounded-full transition-colors duration-300
                     ${isScrolled 
-                      ? (isActive ? 'text-blue-600 font-semibold bg-blue-50' : 'text-gray-600 hover:text-blue-600')
+                      ? (isActive ? 'text-[#8B5A2B] font-semibold bg-[#F5F2EB]' : 'text-gray-600 hover:text-[#8B5A2B]')
                       : (isActive ? 'text-white font-semibold bg-white/20' : 'text-gray-200 hover:text-white drop-shadow')
                     }
                   `}
@@ -91,7 +91,7 @@ export default function Navbar() {
           {/* Tombol PPDB */}
           <Link
             href="/ppdb"
-            className="bg-blue-600 text-white px-4 py-2 rounded-full font-semibold text-xs tracking-wider uppercase hover:bg-blue-700 transition shadow-md hover:scale-105"
+            className="bg-[#8B5A2B] text-white px-4 py-2 rounded-full font-semibold text-xs tracking-wider uppercase hover:bg-[#5C4033] transition shadow-md hover:scale-105"
           >
             PPDB Online
           </Link>
@@ -101,7 +101,7 @@ export default function Navbar() {
         <div className="md:hidden">
           <Link
             href="/ppdb"
-            className="bg-blue-600 text-white px-3.5 py-1.5 rounded-full font-semibold text-xs tracking-wider uppercase shadow"
+            className="bg-[#8B5A2B] text-white px-3.5 py-1.5 rounded-full font-semibold text-xs tracking-wider uppercase shadow"
           >
             PPDB
           </Link>
@@ -119,7 +119,7 @@ export default function Navbar() {
                 setActiveLink(link.name);
                 setMobileMenuOpen(false);
               }}
-              className="py-2 hover:text-blue-600 border-b border-gray-50 last:border-none"
+              className="py-2 hover:text-[#8B5A2B] border-b border-gray-50 last:border-none"
             >
               {link.name}
             </Link>

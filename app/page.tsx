@@ -44,7 +44,7 @@ export default function Home() {
               <div className="lg:col-span-4 flex justify-center lg:justify-end">
                 <div className="relative w-48 h-56 sm:w-60 sm:h-72 rounded-2xl overflow-hidden shadow-2xl border-4 border-[#A47E3B]/50 bg-[#3F2E26] group">
                   <Image 
-                    src="/pendiri.jpg" 
+                    src="/pendiri.png" 
                     alt="Pendiri Yayasan Hidayatut Thalibin" 
                     fill
                     className="object-cover object-center group-hover:scale-105 transition duration-500"
@@ -68,7 +68,7 @@ export default function Home() {
         <Footer theme="warm" />
       </ScrollReveal>
 
-      <ChatbotWidget />
+      <ChatbotWidget theme="warm"/>
     </main>
   );
 }
