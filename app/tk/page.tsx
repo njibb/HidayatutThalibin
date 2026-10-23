@@ -88,7 +88,7 @@ export default function TKPage() {
       <UnitHero 
         name={tkData.name} 
         tagline={tkData.tagline} 
-        bgImage="/unit-tk.jpg"       
+        bgImage="/.jpg"       
         theme="amber"
       />
       
@@ -109,7 +109,7 @@ export default function TKPage() {
         <UnitProgram 
           programs={tkData.excellencePrograms} 
           theme="amber" 
-          bgImage="/unit-tk.jpg" 
+          bgImage="/.jpg" 
         />
       </ScrollReveal>
 

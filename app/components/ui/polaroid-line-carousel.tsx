@@ -3,10 +3,11 @@
 "use client"
 
 import * as React from "react"
-
+import Image from 'next/image'
 export type LandPalette = "dawn" | "alpine" | "dusk" | "mist"
 
 export type Slide = {
+  src?: string
   image?: string
   title?: string
   caption?: string
