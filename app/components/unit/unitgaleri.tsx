@@ -47,7 +47,8 @@ export default function UnitGaleri({ unitCode = "tk", theme = "amber" }: UnitGal
   // DIPERBAIKI: Fallback "/unit-tk.jpg" dihapus dan diganti string kosong ("") 
   // agar data Base64 dari admin bisa langsung tampil tanpa error asset lokal yang hilang.
   const slides: Slide[] = beritaList.map((item) => ({
-    image: item.image || "",
+    src: item.image || "",   // <-- Tambahkan ini agar dibaca oleh PolaroidLineCarousel
+    image: item.image || "", // Tetap pertahankan untuk jaga-jaga
     title: item.title,
     caption: new Date(item.createdAt).toLocaleDateString("id-ID", {
       day: "numeric",
