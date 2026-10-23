@@ -9,7 +9,6 @@ import UnitNavbar from "@/app/components/unit/unitnavbar";
 import Footer from "@/app/components/footer";
 import { smkData } from "@/app/data/smkdata";
 
-// Komponen Logika Baca Berita SMK
 function BeritaContent() {
   const params = useParams();
   const id = params?.id as string;
@@ -21,7 +20,6 @@ function BeritaContent() {
     const fetchDetailBerita = async () => {
       try {
         if (!id) return;
-        // Panggil endpoint proxy khusus smk
         const response = await fetch(`/api/proxy-berita/smk/${id}`);
         const result = await response.json();
         if (response.ok && result.status === 1) {
@@ -99,7 +97,6 @@ function BeritaContent() {
   );
 }
 
-// Komponen Pembungkus Halaman Detail (Dilindungi Suspense)
 export default function DetailBeritaSMKPage() {
   return (
     <main className="min-h-screen bg-white text-gray-900">
@@ -113,7 +110,6 @@ export default function DetailBeritaSMKPage() {
           <ArrowLeft className="w-4 h-4" /> Kembali ke Berita
         </Link>
 
-        {/* Pelindung Suspense untuk komponen dinamis */}
         <Suspense fallback={<div className="py-20 text-center text-gray-400 font-medium animate-pulse">Memuat artikel berita...</div>}>
           <BeritaContent />
         </Suspense>

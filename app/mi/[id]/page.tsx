@@ -9,7 +9,6 @@ import UnitNavbar from "@/app/components/unit/unitnavbar";
 import Footer from "@/app/components/footer";
 import { miData } from "@/app/data/miData";
 
-// 1. KITA PISAHKAN LOGIKA BACA DATA KE DALAM KOMPONEN KHUSUS
 function BeritaContent() {
   const params = useParams();
   const id = params?.id as string;
@@ -98,8 +97,6 @@ function BeritaContent() {
   );
 }
 
-
-// 2. KOMPONEN HALAMAN UTAMA YANG MEMBUNGKUS BERITA DENGAN SUSPENSE
 export default function DetailBeritaMIPage() {
   return (
     <main className="min-h-screen bg-white text-gray-900">
@@ -113,7 +110,6 @@ export default function DetailBeritaMIPage() {
           <ArrowLeft className="w-4 h-4" /> Kembali ke Berita
         </Link>
 
-        {/* 3. Kita lindungi komponen dinamis dengan batas Suspense */}
         <Suspense fallback={<div className="py-20 text-center text-gray-400 font-medium animate-pulse">Memuat artikel berita...</div>}>
           <BeritaContent />
         </Suspense>
