@@ -360,10 +360,10 @@ export default function PolaroidLineCarousel({
     if (off > max) off = max + (off - max) * 0.35
     sim.current.off = off
   }
-const onUp = () => {
+  const onUp = () => {
     const d = drag.current
     drag.current = null
-    lastTouch.current = performance.now() // <-- Gunakan .current, bukan .now
+    lastTouch.current = performance.now()
     if (!d) return
     if (d.moved) {
       setDragging(false)
