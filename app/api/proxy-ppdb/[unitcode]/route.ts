@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, context: RouteParams) {
     const resolvedParams = await context.params;
     const unitCode = resolvedParams.unitcode;
 
-    const response = await fetch(`https://admin-hidatha.vercel.app/api/public/${unitCode}/ppdbs`, {
+    const response = await fetch(`https://admin-hidatha.vercel.app/api/public/${unitCode}/ppdb`, {
       cache: 'no-store'
     });
     

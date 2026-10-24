@@ -18,9 +18,9 @@ export default function UnitPPDB() {
 
   const units = [
     { id: "tk", label: "TK" },
-    { id: "sd", label: "SD" },
-    { id: "mi", label: "MI" },
-    { id: "mts", label: "MTs" }
+    { id: "mi", label: "SD" },
+    { id: "mts", label: "MI" },
+    { id: "smk", label: "MTs" }
   ];
 
   useEffect(() => {
