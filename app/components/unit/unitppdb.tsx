@@ -6,7 +6,7 @@ import { ContainerScroll } from "../ui/container-scroll-animation";
 import { CheckCircle2, Loader2, School } from "lucide-react";
 
 export default function UnitPPDB() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  
   const [ppdbData, setPpdbData] = useState<Record<string, any[]>>({
     tk: [],
     sd: [],
