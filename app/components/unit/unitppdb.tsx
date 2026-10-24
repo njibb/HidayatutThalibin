@@ -6,7 +6,7 @@ import { ContainerScroll } from "../ui/container-scroll-animation";
 import { CheckCircle2, Loader2, School } from "lucide-react";
 
 export default function UnitPPDB() {
-  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [ppdbData, setPpdbData] = useState<Record<string, any[]>>({
     tk: [],
     mi: [],
@@ -27,11 +27,11 @@ export default function UnitPPDB() {
     const fetchAllPPDB = async () => {
       setIsLoading(true);
       try {
-        // Fetch ke 4 unit secara paralel (bersamaan)
         const fetchPromises = units.map(u => fetch(`/api/proxy-ppdb/${u.id}`));
         const responses = await Promise.all(fetchPromises);
         
-        const newData: Record<string, any[]> = { tk: [], sd: [], mi: [], mts: [] };
+        // Sudah dikoreksi jadi tk, mi, mts, smk
+        const newData: Record<string, any[]> = { tk: [], mi: [], mts: [], smk: [] };
         
         for (let i = 0; i < responses.length; i++) {
           const res = responses[i];
@@ -101,33 +101,65 @@ export default function UnitPPDB() {
               </div>
             ) : currentList.length === 0 ? (
               <div className="flex items-center justify-center h-full text-gray-400 font-medium min-h-[250px]">
-                Belum ada data paket PPDB untuk unit {units.find(u => u.id === activeUnit)?.label}.
+                Belum ada data pendaftaran aktif untuk unit {units.find(u => u.id === activeUnit)?.label}.
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-10">
-                {currentList.map((paket, index) => (
-                  <div 
-                    key={paket._id || index} 
-                    className="bg-[#F5F2EB]/50 border border-[#8B5A2B]/20 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-[#8B5A2B] transition-all"
-                  >
-                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 capitalize">
-                      {paket.namaPaket || "Paket Standar"}
-                    </h3>
-                    <div className="text-3xl font-black text-[#8B5A2B] mb-6">
-                      Rp {paket.harga ? parseInt(paket.harga).toLocaleString('id-ID') : "0"}
-                    </div>
-                    
-                    {paket.fasilitas && paket.fasilitas.length > 0 && (
-                      <ul className="space-y-3">
-                        {paket.fasilitas.map((item: string, i: number) => (
-                          <li key={i} className="flex items-start gap-2.5">
-                            <CheckCircle2 className="w-5 h-5 text-[#8B5A2B] shrink-0 mt-0.5" />
-                            <span className="text-gray-700 text-sm md:text-base leading-snug">{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+                {currentList.map((ppdbDoc, index) => (
+                  <React.Fragment key={ppdbDoc._id || index}>
+                    {/* Melakukan mapping ke struktur data 'jalurPendaftaran' */}
+                    {ppdbDoc.jalurPendaftaran && ppdbDoc.jalurPendaftaran.map((jalur: any, i: number) => {
+                      
+                      // Menghitung Total Biaya
+                      const totalBiaya = (Number(jalur.biayaFormulir) || 0) + (Number(jalur.uangGedung) || 0) + (Number(jalur.biayaSpp) || 0);
+
+                      return (
+                        <div 
+                          key={`${ppdbDoc._id}-${i}`} 
+                          className="bg-[#F5F2EB]/50 border border-[#8B5A2B]/20 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-[#8B5A2B] transition-all"
+                        >
+                          <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-1 capitalize">
+                            Jalur: {jalur.namaJalur}
+                          </h3>
+                          <p className="text-xs text-gray-500 mb-3 font-medium uppercase tracking-wider">Estimasi Biaya Awal</p>
+                          
+                          <div className="text-3xl font-black text-[#8B5A2B] mb-6">
+                            Rp {totalBiaya.toLocaleString('id-ID')}
+                          </div>
+                          
+                          <ul className="space-y-3 border-t border-[#8B5A2B]/10 pt-5">
+                            <li className="flex items-center justify-between gap-2.5">
+                              <div className="flex items-center gap-2">
+                                <CheckCircle2 className="w-5 h-5 text-[#8B5A2B] shrink-0" />
+                                <span className="text-gray-700 text-sm md:text-base font-medium">Biaya Formulir</span>
+                              </div>
+                              <span className="font-bold text-gray-900">
+                                Rp {Number(jalur.biayaFormulir || 0).toLocaleString('id-ID')}
+                              </span>
+                            </li>
+                            <li className="flex items-center justify-between gap-2.5">
+                              <div className="flex items-center gap-2">
+                                <CheckCircle2 className="w-5 h-5 text-[#8B5A2B] shrink-0" />
+                                <span className="text-gray-700 text-sm md:text-base font-medium">Uang Gedung</span>
+                              </div>
+                              <span className="font-bold text-gray-900">
+                                Rp {Number(jalur.uangGedung || 0).toLocaleString('id-ID')}
+                              </span>
+                            </li>
+                            <li className="flex items-center justify-between gap-2.5">
+                              <div className="flex items-center gap-2">
+                                <CheckCircle2 className="w-5 h-5 text-[#8B5A2B] shrink-0" />
+                                <span className="text-gray-700 text-sm md:text-base font-medium">SPP Bulan Pertama</span>
+                              </div>
+                              <span className="font-bold text-gray-900">
+                                Rp {Number(jalur.biayaSpp || 0).toLocaleString('id-ID')}
+                              </span>
+                            </li>
+                          </ul>
+                        </div>
+                      );
+                    })}
+                  </React.Fragment>
                 ))}
               </div>
             )}
