@@ -9,18 +9,18 @@ export default function UnitPPDB() {
   
   const [ppdbData, setPpdbData] = useState<Record<string, any[]>>({
     tk: [],
-    sd: [],
     mi: [],
-    mts: []
+    mts: [],
+    smk: []
   });
   const [activeUnit, setActiveUnit] = useState<string>("tk");
   const [isLoading, setIsLoading] = useState(true);
 
   const units = [
     { id: "tk", label: "TK" },
-    { id: "mi", label: "SD" },
-    { id: "mts", label: "MI" },
-    { id: "smk", label: "MTs" }
+    { id: "mi", label: "MI" },
+    { id: "mts", label: "MTs" },
+    { id: "smk", label: "SMK" }
   ];
 
   useEffect(() => {
