@@ -18,8 +18,9 @@ import { miData } from '@/app/data/miData';
 // Komponen mandiri untuk meload data struktur organisasi dari Database Admin CMS (Khusus MI)
 function DynamicUnitStruktur() {
   const [strukturData, setStrukturData] = useState({
-    pimpinanPuncak: { name: "Memuat...", role: "Pimpinan" },
-    komite: undefined as { name: string; role: string } | undefined,
+    // PERBAIKAN: Ubah Inisialisasi menjadi Array
+    pimpinanPuncak: [] as { name: string; role: string }[], 
+    komite: [] as { name: string; role: string }[],
     wakilDanTu: [] as { name: string; role: string }[],
     waliKelas: [] as { name: string; role: string }[]
   });
@@ -36,14 +37,15 @@ function DynamicUnitStruktur() {
           const data = result.data;
           const mapToProp = (item: any) => ({ name: item.nama, role: item.jabatan });
 
-          const pimpinan = data.find((i: any) => i.kategori === 'pimpinan');
-          const komite = data.find((i: any) => i.kategori === 'komite');
+          // PERBAIKAN: Gunakan .filter() untuk semua kategori agar menampung banyak data
+          const pimpinan = data.filter((i: any) => i.kategori === 'pimpinan').map(mapToProp);
+          const komiteList = data.filter((i: any) => i.kategori === 'komite').map(mapToProp);
           const wakil = data.filter((i: any) => i.kategori === 'wakil_tu').map(mapToProp);
           const wali = data.filter((i: any) => i.kategori === 'walikelas').map(mapToProp);
 
           setStrukturData({
-            pimpinanPuncak: pimpinan ? mapToProp(pimpinan) : { name: "Belum Diisi", role: "Kepala Madrasah" },
-            komite: komite ? mapToProp(komite) : undefined,
+            pimpinanPuncak: pimpinan.length > 0 ? pimpinan : [{ name: "Belum Diisi", role: "Kepala Madrasah" }],
+            komite: komiteList,
             wakilDanTu: wakil,
             waliKelas: wali
           });

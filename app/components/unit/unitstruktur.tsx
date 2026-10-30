@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
 
@@ -8,8 +9,9 @@ interface StrukturMember {
 
 interface UnitStrukturProps {
   theme?: "emerald" | "blue" | "amber" | "purple";
-  pimpinanPuncak: StrukturMember;
-  komite?: StrukturMember;
+  // Diubah menjadi Array agar bisa menampung banyak data
+  pimpinanPuncak: StrukturMember[]; 
+  komite?: StrukturMember[];
   wakilDanTu: StrukturMember[];
   waliKelas?: StrukturMember[];
 }
@@ -22,20 +24,7 @@ export default function UnitStruktur({
   waliKelas,
 }: UnitStrukturProps) {
 
-  const themeClasses: Record<string, {
-    badgeBg: string;
-    containerBg: string;
-    primaryBox: string;
-    primarySub: string;
-    secondaryBox: string;
-    lineColor: string;
-    cardHover: string;
-    tagBg: string;
-    altBox: string;
-    altSub: string;
-    roleColor: string;
-    activeBadge: string;
-  }> = {
+  const themeClasses: Record<string, any> = {
     emerald: {
       badgeBg: "bg-emerald-100 text-emerald-800 border-emerald-200",
       containerBg: "bg-gradient-to-b from-emerald-50/40 to-white border-emerald-100",
@@ -112,39 +101,52 @@ export default function UnitStruktur({
 
       <div className={`border rounded-[2.5rem] p-8 sm:p-14 shadow-xl shadow-gray-100 flex flex-col items-center relative overflow-hidden ${t.containerBg}`}>
         
-        <div className="w-full flex flex-col items-center z-10">
-          <div className={`relative ${t.primaryBox} px-8 py-5 rounded-3xl shadow-xl min-w-[280px] sm:min-w-[320px] border transform hover:-translate-y-1 transition-all duration-300`}>
-            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-white/10 backdrop-blur-md px-3 py-0.5 rounded-full border border-white/20 text-[10px] uppercase tracking-widest font-semibold">
-              Pucuk Pimpinan
-            </div>
-            <span className={`block text-xs uppercase tracking-widest font-bold mt-1 mb-1 ${t.primarySub}`}>
-              {pimpinanPuncak.role}
-            </span>
-            <span className="block font-extrabold text-xl tracking-wide">
-              {pimpinanPuncak.name}
-            </span>
+        {/* Pucuk Pimpinan (Sekarang pakai Grid) */}
+        <div className="w-full flex flex-col items-center z-10 relative">
+          <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white/50 backdrop-blur-md px-4 py-1 rounded-full border border-gray-200 text-[10px] uppercase tracking-widest font-bold text-gray-700 shadow-sm z-20">
+            Pucuk Pimpinan
+          </div>
+          
+          <div className="flex flex-wrap justify-center gap-6 mt-4">
+            {pimpinanPuncak && pimpinanPuncak.map((p, idx) => (
+              <div key={idx} className={`relative ${t.primaryBox} px-8 py-5 rounded-3xl shadow-xl min-w-[280px] sm:min-w-[320px] border transform hover:-translate-y-1 transition-all duration-300`}>
+                <span className={`block text-xs uppercase tracking-widest font-bold mt-1 mb-1 ${t.primarySub}`}>
+                  {p.role}
+                </span>
+                <span className="block font-extrabold text-xl tracking-wide">
+                  {p.name}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className={`w-1 h-10 rounded-full ${t.lineColor} my-2 z-0`}></div>
+        <div className={`w-1 h-12 rounded-full ${t.lineColor} my-4 z-0`}></div>
 
-        {komite && (
+        {/* Komite / Tata Usaha (Sekarang pakai Grid) */}
+        {komite && komite.length > 0 && (
           <>
-            <div className={`relative ${t.secondaryBox} px-7 py-4 rounded-2xl shadow-md min-w-[245px] sm:min-w-[280px] border transform hover:-translate-y-1 transition-all duration-300 z-10`}>
-              <span className="block text-[11px] uppercase tracking-widest text-gray-500 font-bold mb-1">
-                {komite.role}
-              </span>
-              <span className="block font-bold text-base text-gray-900">
-                {komite.name}
-              </span>
+            <div className="w-full flex flex-col items-center z-10">
+              <div className="flex flex-wrap justify-center gap-6">
+                {komite.map((k, idx) => (
+                  <div key={idx} className={`relative ${t.secondaryBox} px-7 py-4 rounded-2xl shadow-md min-w-[245px] sm:min-w-[280px] border transform hover:-translate-y-1 transition-all duration-300 z-10`}>
+                    <span className="block text-[11px] uppercase tracking-widest text-gray-500 font-bold mb-1">
+                      {k.role}
+                    </span>
+                    <span className="block font-bold text-base text-gray-900">
+                      {k.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className={`w-1 h-10 rounded-full ${t.lineColor} my-2 z-0`}></div>
+            <div className={`w-1 h-12 rounded-full ${t.lineColor} my-4 z-0`}></div>
           </>
         )}
-
+        
         <div className="w-full max-w-4xl mt-2 z-10">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {wakilDanTu.map((item, idx) => (
+            {wakilDanTu && wakilDanTu.map((item, idx) => (
               <div 
                 key={idx} 
                 className={`bg-white/90 backdrop-blur-md text-gray-900 p-6 rounded-2xl shadow-md border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-center ${t.cardHover}`}
