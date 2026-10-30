@@ -65,9 +65,7 @@ export default function UnitProfile({ theme = "blue", profile, vision, missions 
 
         {/* Kolom Kanan: Teks Profil, Visi, Misi */}
         <div className="lg:col-span-7 space-y-6">
-          <span className={`inline-block text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider border ${t.badge}`}>
-            Profil Singkat Madrasah
-          </span>
+          
 
           <h2 className={`text-3xl sm:text-4xl font-extrabold tracking-tight ${t.accentText}`}>
             Mengenal Lebih Dekat Sekolah Kami

@@ -78,9 +78,7 @@ export default function UnitProgram({ programs, theme = "blue", bgImage }: UnitP
 
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <span className={`inline-block text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider border mb-3 ${t.badge}`}>
-            Keunggulan Madrasah
-          </span>
+          
           <h2 className={`text-3xl sm:text-4xl font-extrabold tracking-tight ${t.titleColor}`}>
             Program Unggulan Pilihan
           </h2>

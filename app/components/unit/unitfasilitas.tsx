@@ -54,9 +54,6 @@ export default function UnitFasilitas({ facilities, theme = "emerald" }: UnitFas
   return (
     <section className="py-24 px-4 sm:px-6 max-w-7xl mx-auto">
       <div className="text-center mb-16">
-        <span className={`text-xs font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider ${t.badge}`}>
-          Sarana & Prasarana
-        </span>
         <h2 className={`text-3xl sm:text-4xl font-extrabold mt-3 mb-3 ${t.title}`}>
           Fasilitas Unggulan Madrasah
         </h2>

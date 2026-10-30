@@ -88,9 +88,6 @@ export default function UnitStruktur({
   return (
     <section className="py-24 px-6 max-w-6xl mx-auto text-center">
       <div className="mb-16">
-        <span className={`inline-block text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest border mb-3 ${t.badgeBg}`}>
-          Organisasi Madrasah
-        </span>
         <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-3">
           Struktur Kepengurusan
         </h2>
@@ -169,7 +166,7 @@ export default function UnitStruktur({
             <div className="w-full max-w-4xl z-10">
               <div className="text-center mb-6">
                 <h4 className={`text-xs font-extrabold uppercase tracking-widest py-2 px-6 rounded-full inline-block shadow-sm ${t.tagBg}`}>
-                  📚 Jajaran Wali Kelas
+                  Jajaran Wali Kelas
                 </h4>
               </div>
 
@@ -196,10 +193,10 @@ export default function UnitStruktur({
         
         <div className="w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 gap-6 z-10">
           <div className="bg-white text-gray-900 py-4 px-6 rounded-2xl shadow-md border border-gray-200/80 font-bold text-sm sm:text-base flex items-center justify-center gap-3">
-            <span className="text-xl">👥</span> Dewan Guru & Staf Pengajar
+            Dewan Guru & Staf Pengajar
           </div>
           <div className={`${t.activeBadge} py-4 px-6 rounded-2xl shadow-md font-bold text-sm sm:text-base flex items-center justify-center gap-3`}>
-            <span className="text-xl">🎓</span> Seluruh Peserta Didik Aktif
+            Seluruh Peserta Didik Aktif
           </div>
         </div>
 

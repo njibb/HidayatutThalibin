@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Badge } from "../ui/badge";
-import { Calendar as CalendarIcon, Clock, ChevronLeft, ChevronRight, Info } from "lucide-react";
+import { Calendar as  Clock, ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { cn } from "@/app/lib/utils";
 
 export interface DBAgendaItem {
@@ -177,9 +177,6 @@ export default function UnitJadwalKalenderAkademik({ unitCode = "tk", theme = "b
   return (
     <section id="kalender-akademik" className="py-24 px-4 sm:px-6 max-w-7xl mx-auto">
       <div className="text-center mb-14">
-        <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider border mb-3 ${ts.badgeBg}`}>
-          <CalendarIcon className="h-3.5 w-3.5" /> ACADEMIC CALENDAR
-        </span>
         <h2 className={`text-3xl sm:text-4xl font-extrabold tracking-tight ${ts.titleColor}`}>
           Kalender Akademik Madrasah
         </h2>

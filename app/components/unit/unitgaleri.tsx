@@ -60,9 +60,6 @@ export default function UnitGaleri({ unitCode = "tk", theme = "amber" }: UnitGal
   return (
     <section id="berita-galeri" className="py-24 bg-gradient-to-b from-white to-gray-50/50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 text-center">
-        <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider border mb-3 ${t.badgeBg}`}>
-          <Newspaper className="h-3.5 w-3.5" /> Berita & Informasi Terbaru
-        </span>
         <h2 className={`text-3xl sm:text-4xl font-extrabold tracking-tight ${t.titleColor}`}>
           Kilas Berita & Momen Madrasah
         </h2>
