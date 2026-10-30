@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 
@@ -26,6 +27,17 @@ export default function UnitNavbar({ unitName, unitCode, theme = "blue" }: UnitN
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Mapping logo berdasarkan unitCode (menggunakan file dari folder public)
+  const logoMap: Record<string, string> = {
+    tk: "/logo_TK_Hidayatut_Thalibin_HD.png",
+    mi: "/logo_MI_HD.png",
+    mts: "/logo_MTs_HD.png",
+    smk: "/logo_SMK_HD.png"
+  };
+
+  // Ambil logo sesuai unitCode (default ke logo MI jika tidak ketemu)
+  const unitLogo = logoMap[unitCode.toLowerCase()] || "/logo_MI_HD.png";
 
   // Mapping warna tema untuk Navbar
   const themeClasses = {
@@ -86,8 +98,14 @@ export default function UnitNavbar({ unitName, unitCode, theme = "blue" }: UnitN
           </button>
 
           <Link href={`/${unitCode.toLowerCase()}`} className="flex items-center gap-2.5 group">
-            <div className={`w-8 h-8 ${t.badge} rounded-lg flex items-center justify-center font-bold text-white text-xs shadow-sm group-hover:scale-105 transition duration-300`}>
-              {unitCode}
+            {/* Mengganti kotak teks inisial dengan tag Image untuk menampilkan logo */}
+            <div className="relative w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-sm overflow-hidden border border-gray-100 group-hover:scale-105 transition duration-300">
+              <Image 
+                src={unitLogo} 
+                alt={`Logo ${unitName}`} 
+                fill 
+                className="object-cover object-center"
+              />
             </div>
             <span className={`font-bold text-sm sm:text-base tracking-tight transition-colors ${isScrolled ? 'text-gray-900' : 'text-white drop-shadow-md'}`}>
               {unitName}
