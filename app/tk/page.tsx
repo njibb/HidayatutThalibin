@@ -79,7 +79,7 @@ export default function TKPage() {
   return (
     <main className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
       <UnitNavbar unitName={tkData.shortName} unitCode={tkData.code} theme="amber" />
-      <UnitHero name={tkData.name} tagline={tkData.tagline} bgImage="/.jpg" theme="amber" />
+      <UnitHero name={tkData.name} tagline={tkData.tagline} bgImage="/tkbg.png" theme="amber" />
       
       <ScrollReveal>
         <div id="profil"><UnitProfile theme="amber" profile={tkData.profile} vision={tkData.vision} missions={tkData.missions} /></div>
