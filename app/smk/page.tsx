@@ -79,7 +79,7 @@ export default function SMKPage() {
   return (
     <main className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
       <UnitNavbar unitName={smkData.shortName} unitCode={smkData.code} theme="purple" />
-      <UnitHero name={smkData.name} tagline={smkData.tagline} bgImage="/unit-smk.jpg" theme="purple" />
+      <UnitHero name={smkData.name} tagline={smkData.tagline} bgImage="/smkbg.png" theme="purple" />
       
       <ScrollReveal>
         <div id="profil"><UnitProfile theme="purple" profile={smkData.profile} vision={smkData.vision} missions={smkData.missions} /></div>

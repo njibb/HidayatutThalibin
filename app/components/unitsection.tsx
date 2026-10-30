@@ -31,7 +31,7 @@ export default function UnitSection() {
       link: "/mts",
     },
     {
-      image: "/unit-smk.jpg",
+      image: "/smkbg.png",
       title: "SMK Hidayatut Thalibin",
       caption: "Sekolah kejuruan siap kerja dengan keahlian vokasi modern dan berdaya saing tinggi.",
       link: "/smk",
