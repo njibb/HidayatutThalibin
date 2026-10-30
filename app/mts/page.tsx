@@ -15,11 +15,10 @@ import ChatbotWidget from '@/app/components/chatbotwidget';
 import ScrollReveal from '@/app/components/scrollreveal'; 
 import { mtsData } from '@/app/data/mtsData';
 
-// Komponen mandiri untuk meload data struktur organisasi dari Database Admin CMS (Khusus MTs)
 function DynamicUnitStruktur() {
   const [strukturData, setStrukturData] = useState({
-    pimpinanPuncak: { name: "Memuat...", role: "Pimpinan" },
-    komite: undefined as { name: string; role: string } | undefined,
+    pimpinanPuncak: [] as { name: string; role: string }[],
+    komite: [] as { name: string; role: string }[],
     wakilDanTu: [] as { name: string; role: string }[],
     waliKelas: [] as { name: string; role: string }[]
   });
@@ -28,7 +27,6 @@ function DynamicUnitStruktur() {
   useEffect(() => {
     const fetchStruktur = async () => {
       try {
-        // Tembak proxy structure dengan unit 'mts'
         const response = await fetch('/api/proxy-structure/mts', { cache: 'no-store' });
         const result = await response.json();
 
@@ -36,14 +34,14 @@ function DynamicUnitStruktur() {
           const data = result.data;
           const mapToProp = (item: any) => ({ name: item.nama, role: item.jabatan });
 
-          const pimpinan = data.find((i: any) => i.kategori === 'pimpinan');
-          const komite = data.find((i: any) => i.kategori === 'komite');
+          const pimpinan = data.filter((i: any) => i.kategori === 'pimpinan').map(mapToProp);
+          const komiteList = data.filter((i: any) => i.kategori === 'komite').map(mapToProp);
           const wakil = data.filter((i: any) => i.kategori === 'wakil_tu').map(mapToProp);
           const wali = data.filter((i: any) => i.kategori === 'walikelas').map(mapToProp);
 
           setStrukturData({
-            pimpinanPuncak: pimpinan ? mapToProp(pimpinan) : { name: "Belum Diisi", role: "Kepala Madrasah" },
-            komite: komite ? mapToProp(komite) : undefined,
+            pimpinanPuncak: pimpinan.length > 0 ? pimpinan : [{ name: "Belum Diisi", role: "Kepala Madrasah" }],
+            komite: komiteList,
             wakilDanTu: wakil,
             waliKelas: wali
           });
@@ -81,64 +79,33 @@ export default function MtsPage() {
   return (
     <main className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
       <UnitNavbar unitName={mtsData.shortName} unitCode={mtsData.code} theme="blue" />
-      
-      <UnitHero 
-        name={mtsData.name} 
-        tagline={mtsData.tagline} 
-        bgImage="/mtsbg.jpg" 
-        theme="blue"
-      />
+      <UnitHero name={mtsData.name} tagline={mtsData.tagline} bgImage="/mtsbg.jpg" theme="blue" />
       
       <ScrollReveal>
-        <div id="profil">
-          <UnitProfile 
-            theme="blue"
-            profile={mtsData.profile} 
-            vision={mtsData.vision} 
-            missions={mtsData.missions} 
-          />
-        </div>
+        <div id="profil"><UnitProfile theme="blue" profile={mtsData.profile} vision={mtsData.vision} missions={mtsData.missions} /></div>
       </ScrollReveal>
 
       <ScrollReveal delay={0.1}>
-        <UnitProgram 
-          programs={mtsData.excellencePrograms} 
-          theme="blue" 
-          bgImage="/mtsbg.jpg" 
-        />
-      </ScrollReveal>
-
-      {/* Struktur Organisasi Dinamis MTs */}
-      <ScrollReveal>
-        <div id="struktur">
-          <DynamicUnitStruktur />
-        </div>
+        <UnitProgram programs={mtsData.excellencePrograms} theme="blue" bgImage="/mtsbg.jpg" />
       </ScrollReveal>
 
       <ScrollReveal>
-        <div id="fasilitas">
-          <UnitFasilitas facilities={mtsData.facilities} theme="blue" />
-        </div>
-      </ScrollReveal>
-
-      {/* Berita & Galeri Polaroid Dinamis (Kirim unitCode="mts") */}
-      <ScrollReveal>
-        <div id="berita">
-          <UnitGaleri unitCode="mts" theme="blue" />
-        </div>
-      </ScrollReveal>
-
-      {/* Kalender Akademik Dinamis (Kirim unitCode="mts") */}
-      <ScrollReveal>
-        <div id="kalender">
-          <UnitJadwalKalenderAkademik unitCode="mts" theme="blue" />
-        </div>
+        <div id="struktur"><DynamicUnitStruktur /></div>
       </ScrollReveal>
 
       <ScrollReveal>
-        <Footer theme="blue" />
+        <div id="fasilitas"><UnitFasilitas facilities={mtsData.facilities} theme="blue" /></div>
       </ScrollReveal>
 
+      <ScrollReveal>
+        <div id="berita"><UnitGaleri unitCode="mts" theme="blue" /></div>
+      </ScrollReveal>
+
+      <ScrollReveal>
+        <div id="kalender"><UnitJadwalKalenderAkademik unitCode="mts" theme="blue" /></div>
+      </ScrollReveal>
+
+      <ScrollReveal><Footer theme="blue" /></ScrollReveal>
       <ChatbotWidget theme="blue" />
     </main>
   );

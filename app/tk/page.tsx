@@ -15,11 +15,10 @@ import ChatbotWidget from '@/app/components/chatbotwidget';
 import ScrollReveal from '@/app/components/scrollreveal'; 
 import { tkData } from '@/app/data/tkdata';
 
-// Komponen mandiri untuk meload data struktur organisasi dari Database Admin CMS
 function DynamicUnitStruktur() {
   const [strukturData, setStrukturData] = useState({
-    pimpinanPuncak: { name: "Memuat...", role: "Pimpinan" },
-    komite: undefined as { name: string; role: string } | undefined,
+    pimpinanPuncak: [] as { name: string; role: string }[],
+    komite: [] as { name: string; role: string }[],
     wakilDanTu: [] as { name: string; role: string }[],
     waliKelas: [] as { name: string; role: string }[]
   });
@@ -28,7 +27,6 @@ function DynamicUnitStruktur() {
   useEffect(() => {
     const fetchStruktur = async () => {
       try {
-        // Menembak proxy structure unit 'tk'
         const response = await fetch('/api/proxy-structure/tk', { cache: 'no-store' });
         const result = await response.json();
 
@@ -36,15 +34,14 @@ function DynamicUnitStruktur() {
           const data = result.data;
           const mapToProp = (item: any) => ({ name: item.nama, role: item.jabatan });
 
-          // Memilah data berdasarkan kategori yang disimpan dari panel Admin
-          const pimpinan = data.find((i: any) => i.kategori === 'pimpinan');
-          const komite = data.find((i: any) => i.kategori === 'komite');
+          const pimpinan = data.filter((i: any) => i.kategori === 'pimpinan').map(mapToProp);
+          const komiteList = data.filter((i: any) => i.kategori === 'komite').map(mapToProp);
           const wakil = data.filter((i: any) => i.kategori === 'wakil_tu').map(mapToProp);
           const wali = data.filter((i: any) => i.kategori === 'walikelas').map(mapToProp);
 
           setStrukturData({
-            pimpinanPuncak: pimpinan ? mapToProp(pimpinan) : { name: "Belum Diisi", role: "Kepala Sekolah" },
-            komite: komite ? mapToProp(komite) : undefined,
+            pimpinanPuncak: pimpinan.length > 0 ? pimpinan : [{ name: "Belum Diisi", role: "Kepala Sekolah" }],
+            komite: komiteList,
             wakilDanTu: wakil,
             waliKelas: wali
           });
@@ -81,71 +78,35 @@ function DynamicUnitStruktur() {
 export default function TKPage() {
   return (
     <main className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
-      {/* Navbar dengan tema Kuning (Amber) */}
       <UnitNavbar unitName={tkData.shortName} unitCode={tkData.code} theme="amber" />
+      <UnitHero name={tkData.name} tagline={tkData.tagline} bgImage="/.jpg" theme="amber" />
       
-      {/* Hero Section */}
-      <UnitHero 
-        name={tkData.name} 
-        tagline={tkData.tagline} 
-        bgImage="/.jpg"       
-        theme="amber"
-      />
-      
-      {/* Profil Sekolah */}
       <ScrollReveal>
-        <div id="profil">
-          <UnitProfile 
-            theme="amber"
-            profile={tkData.profile} 
-            vision={tkData.vision} 
-            missions={tkData.missions} 
-          />
-        </div>
+        <div id="profil"><UnitProfile theme="amber" profile={tkData.profile} vision={tkData.vision} missions={tkData.missions} /></div>
       </ScrollReveal>
 
-      {/* Program Unggulan */}
       <ScrollReveal delay={0.1}>
-        <UnitProgram 
-          programs={tkData.excellencePrograms} 
-          theme="amber" 
-          bgImage="/.jpg" 
-        />
+        <UnitProgram programs={tkData.excellencePrograms} theme="amber" bgImage="/.jpg" />
       </ScrollReveal>
 
-      {/* Struktur Organisasi (Dinamis dari Admin CMS) */}
       <ScrollReveal>
-        <div id="struktur">
-          <DynamicUnitStruktur />
-        </div>
+        <div id="struktur"><DynamicUnitStruktur /></div>
       </ScrollReveal>
 
-      {/* Fasilitas Sekolah */}
       <ScrollReveal>
-        <div id="fasilitas">
-          <UnitFasilitas facilities={tkData.facilities} theme="amber" />
-        </div>
+        <div id="fasilitas"><UnitFasilitas facilities={tkData.facilities} theme="amber" /></div>
       </ScrollReveal>
 
-      {/* Berita & Galeri Polaroid */}
+      {/* Menambahkan prop unitCode="tk" agar galeri polaroid membaca data dari admin */}
       <ScrollReveal>
-        <div id="berita">
-          <UnitGaleri theme="amber" />
-        </div>
+        <div id="berita"><UnitGaleri unitCode="tk" theme="amber" /></div>
       </ScrollReveal>
 
-     {/* Kalender Akademik */}
       <ScrollReveal>
-        <div id="kalender">
-          <UnitJadwalKalenderAkademik unitCode={tkData.code} theme="amber" />
-        </div>
+        <div id="kalender"><UnitJadwalKalenderAkademik unitCode={tkData.code} theme="amber" /></div>
       </ScrollReveal>
 
-      {/* Footer */}
-      <ScrollReveal>
-        <Footer theme="amber" />
-      </ScrollReveal>
-
+      <ScrollReveal><Footer theme="amber" /></ScrollReveal>
       <ChatbotWidget theme="amber" />
     </main>
   );

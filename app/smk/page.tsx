@@ -15,11 +15,10 @@ import ChatbotWidget from '@/app/components/chatbotwidget';
 import ScrollReveal from '@/app/components/scrollreveal'; 
 import { smkData } from '@/app/data/smkdata';
 
-// Komponen mandiri untuk meload data struktur organisasi dari Database Admin CMS (Khusus SMK)
 function DynamicUnitStruktur() {
   const [strukturData, setStrukturData] = useState({
-    pimpinanPuncak: { name: "Memuat...", role: "Pimpinan" },
-    komite: undefined as { name: string; role: string } | undefined,
+    pimpinanPuncak: [] as { name: string; role: string }[],
+    komite: [] as { name: string; role: string }[],
     wakilDanTu: [] as { name: string; role: string }[],
     waliKelas: [] as { name: string; role: string }[]
   });
@@ -28,7 +27,6 @@ function DynamicUnitStruktur() {
   useEffect(() => {
     const fetchStruktur = async () => {
       try {
-        // Tembak proxy structure dengan unit 'smk'
         const response = await fetch('/api/proxy-structure/smk', { cache: 'no-store' });
         const result = await response.json();
 
@@ -36,14 +34,14 @@ function DynamicUnitStruktur() {
           const data = result.data;
           const mapToProp = (item: any) => ({ name: item.nama, role: item.jabatan });
 
-          const pimpinan = data.find((i: any) => i.kategori === 'pimpinan');
-          const komite = data.find((i: any) => i.kategori === 'komite');
+          const pimpinan = data.filter((i: any) => i.kategori === 'pimpinan').map(mapToProp);
+          const komiteList = data.filter((i: any) => i.kategori === 'komite').map(mapToProp);
           const wakil = data.filter((i: any) => i.kategori === 'wakil_tu').map(mapToProp);
           const wali = data.filter((i: any) => i.kategori === 'walikelas').map(mapToProp);
 
           setStrukturData({
-            pimpinanPuncak: pimpinan ? mapToProp(pimpinan) : { name: "Belum Diisi", role: "Kepala SMK" },
-            komite: komite ? mapToProp(komite) : undefined,
+            pimpinanPuncak: pimpinan.length > 0 ? pimpinan : [{ name: "Belum Diisi", role: "Kepala SMK" }],
+            komite: komiteList,
             wakilDanTu: wakil,
             waliKelas: wali
           });
@@ -81,64 +79,33 @@ export default function SMKPage() {
   return (
     <main className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
       <UnitNavbar unitName={smkData.shortName} unitCode={smkData.code} theme="purple" />
-      
-      <UnitHero 
-        name={smkData.name} 
-        tagline={smkData.tagline} 
-        bgImage="/unit-smk.jpg"       
-        theme="purple"
-      />
+      <UnitHero name={smkData.name} tagline={smkData.tagline} bgImage="/unit-smk.jpg" theme="purple" />
       
       <ScrollReveal>
-        <div id="profil">
-          <UnitProfile 
-            theme="purple"
-            profile={smkData.profile} 
-            vision={smkData.vision} 
-            missions={smkData.missions} 
-          />
-        </div>
+        <div id="profil"><UnitProfile theme="purple" profile={smkData.profile} vision={smkData.vision} missions={smkData.missions} /></div>
       </ScrollReveal>
 
       <ScrollReveal delay={0.1}>
-        <UnitProgram 
-          programs={smkData.excellencePrograms} 
-          theme="purple" 
-          bgImage="/unit-smk.jpg" 
-        />
-      </ScrollReveal>
-
-      {/* Struktur Organisasi Dinamis SMK */}
-      <ScrollReveal>
-        <div id="struktur">
-          <DynamicUnitStruktur />
-        </div>
+        <UnitProgram programs={smkData.excellencePrograms} theme="purple" bgImage="/unit-smk.jpg" />
       </ScrollReveal>
 
       <ScrollReveal>
-        <div id="fasilitas">
-          <UnitFasilitas facilities={smkData.facilities} theme="purple" />
-        </div>
-      </ScrollReveal>
-
-      {/* Berita & Galeri Polaroid Dinamis (Kirim unitCode="smk") */}
-      <ScrollReveal>
-        <div id="berita">
-          <UnitGaleri unitCode="smk" theme="purple" />
-        </div>
-      </ScrollReveal>
-
-      {/* Kalender Akademik Dinamis (Kirim unitCode="smk") */}
-      <ScrollReveal>
-        <div id="kalender">
-          <UnitJadwalKalenderAkademik unitCode="smk" theme="purple" />
-        </div>
+        <div id="struktur"><DynamicUnitStruktur /></div>
       </ScrollReveal>
 
       <ScrollReveal>
-        <Footer theme="purple" />
+        <div id="fasilitas"><UnitFasilitas facilities={smkData.facilities} theme="purple" /></div>
       </ScrollReveal>
 
+      <ScrollReveal>
+        <div id="berita"><UnitGaleri unitCode="smk" theme="purple" /></div>
+      </ScrollReveal>
+
+      <ScrollReveal>
+        <div id="kalender"><UnitJadwalKalenderAkademik unitCode="smk" theme="purple" /></div>
+      </ScrollReveal>
+
+      <ScrollReveal><Footer theme="purple" /></ScrollReveal>
       <ChatbotWidget theme="purple"/>
     </main>
   );
