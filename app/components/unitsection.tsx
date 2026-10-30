@@ -13,7 +13,7 @@ export default function UnitSection() {
 
   const unitSlides = [
     {
-      image: "/.jpg",
+      image: "/tkbg.png",
       title: "TK Hidayatut Thalibin",
       caption: "Pendidikan anak usia dini yang ceria, kreatif, dan berbasis nilai-nilai keislaman.",
       link: "/tk",
