@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 
@@ -9,7 +10,6 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Deteksi posisi scroll halaman
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -42,7 +42,6 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         
-        {/* Bagian Kiri: Tombol Menu (Mobile) & Logo/Identitas Yayasan */}
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -53,8 +52,14 @@ export default function Navbar() {
           </button>
 
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm group-hover:scale-105 transition duration-300">
-              <span className="text-base" role="img" aria-label="planet">🪐</span>
+            <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-sm group-hover:scale-105 transition duration-300 overflow-hidden p-0.5">
+              <Image 
+                src="/logoyayasan.png" 
+                alt="Logo Yayasan Hidayatut Thalibin" 
+                width={36} 
+                height={36} 
+                className="object-contain"
+              />
             </div>
             <span className={`font-bold text-sm sm:text-base tracking-tight transition-colors ${isScrolled ? 'text-gray-900' : 'text-white drop-shadow-md'}`}>
               Hidayatut Thalibin
@@ -62,7 +67,6 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Bagian Tengah & Kanan: Menu Navigasi Utama & Tombol PPDB */}
         <nav className="hidden md:flex items-center gap-6">
           <div className="flex items-center gap-1 font-medium text-sm">
             {navLinks.map((link) => {
@@ -88,7 +92,6 @@ export default function Navbar() {
 
           <div className={`h-4 w-[1px] mx-1 ${isScrolled ? 'bg-gray-200' : 'bg-white/20'}`} />
 
-          {/* Tombol PPDB */}
           <Link
             href="/ppdb"
             className="bg-[#8B5A2B] text-white px-4 py-2 rounded-full font-semibold text-xs tracking-wider uppercase hover:bg-[#5C4033] transition shadow-md hover:scale-105"
@@ -97,7 +100,6 @@ export default function Navbar() {
           </Link>
         </nav>
 
-        {/* Tombol PPDB (Mobile Screen) */}
         <div className="md:hidden">
           <Link
             href="/ppdb"
@@ -108,7 +110,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Dropdown Menu Mobile */}
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 shadow-xl px-6 py-4 flex flex-col gap-3 text-sm font-medium text-gray-700 animate-in fade-in slide-in-from-top-2">
           {navLinks.map((link) => (
