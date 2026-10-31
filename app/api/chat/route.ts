@@ -8,54 +8,58 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    // 1. Siapkan teks default jika database sedang kosong/error
-    let beritaText = "Belum ada berita terbaru.";
-    let agendaText = "Belum ada agenda terbaru.";
-    let ppdbText = "Data PPDB sedang diperbarui.";
-    let structureText = "Data struktur organisasi sedang diperbarui.";
+    // Daftar semua unitcode yang ada di sistem admin
+    const units = ['tk', 'mi', 'mts', 'smk'];
+    let dynamicDataText = "";
 
-    // 2. Fetch data langsung dari Admin CMS (Berita, Agenda, PPDB, Structure)
-    try {
-      // Catatan: Ini contoh mengambil data untuk MTs. Silakan tambah fetch untuk MI/SMK jika diperlukan.
-      const [resBerita, resAgenda, resPpdb, resStructure] = await Promise.all([
-        fetch('https://admin-hidatha.vercel.app/api/public/mts/berita', { cache: 'no-store' }),
-        fetch('https://admin-hidatha.vercel.app/api/public/mts/agendas', { cache: 'no-store' }),
-        fetch('https://admin-hidatha.vercel.app/api/public/mts/ppdb', { cache: 'no-store' }),
-        fetch('https://admin-hidatha.vercel.app/api/public/mts/structure', { cache: 'no-store' })
-      ]);
+    // Fetch data untuk SEMUA unit secara serentak
+    await Promise.all(units.map(async (unit) => {
+      try {
+        const [resBerita, resAgenda, resPpdb, resStructure] = await Promise.all([
+          fetch(`https://admin-hidatha.vercel.app/api/public/${unit}/berita`, { cache: 'no-store' }),
+          fetch(`https://admin-hidatha.vercel.app/api/public/${unit}/agendas`, { cache: 'no-store' }),
+          fetch(`https://admin-hidatha.vercel.app/api/public/${unit}/ppdb`, { cache: 'no-store' }),
+          fetch(`https://admin-hidatha.vercel.app/api/public/${unit}/structure`, { cache: 'no-store' })
+        ]);
 
-      if (resBerita.ok) {
-        const dataBerita = await resBerita.json();
-        if (dataBerita.data?.length > 0) {
-          beritaText = dataBerita.data.slice(0, 3).map((item: any) => `- ${item.judul}`).join('\n');
+        let unitBerita = "Belum ada berita.";
+        let unitAgenda = "Belum ada agenda.";
+        let unitPpdb = "Data PPDB sedang diperbarui.";
+        let unitStructure = "Data struktur belum tersedia.";
+
+        if (resBerita.ok) {
+          const data = await resBerita.json();
+          if (data.status === 1 && data.data?.length > 0) {
+            unitBerita = data.data.slice(0, 3).map((item: any) => `- ${item.judul}`).join('\n');
+          }
         }
-      }
-
-      if (resAgenda.ok) {
-        const dataAgenda = await resAgenda.json();
-        if (dataAgenda.data?.length > 0) {
-          agendaText = dataAgenda.data.slice(0, 3).map((item: any) => `- ${item.judul} (Tgl: ${item.tanggal})`).join('\n');
+        if (resAgenda.ok) {
+          const data = await resAgenda.json();
+          if (data.status === 1 && data.data?.length > 0) {
+            unitAgenda = data.data.slice(0, 3).map((item: any) => `- ${item.judul} (Tgl: ${item.tanggal})`).join('\n');
+          }
         }
-      }
-
-      if (resPpdb.ok) {
-        const dataPpdb = await resPpdb.json();
-        if (dataPpdb.data?.length > 0) {
-          // Asumsi struktur JSON PPDB memiliki field 'jalur', 'biaya', 'syarat'
-          ppdbText = dataPpdb.data.map((item: any) => `- Jalur ${item.jalur || 'Umum'}: Biaya Rp ${item.biaya || 0}. Syarat: ${item.syarat || 'Cek di web.'}`).join('\n');
+        if (resPpdb.ok) {
+          const data = await resPpdb.json();
+          if (data.status === 1 && data.data?.length > 0) {
+            unitPpdb = data.data.map((item: any) => `- Jalur ${item.jalur || 'Umum'}: Biaya Rp ${item.biaya || 0}. Syarat: ${item.syarat || 'Cek di web.'}`).join('\n');
+          }
         }
-      }
-
-      if (resStructure.ok) {
-        const dataStructure = await resStructure.json();
-        if (dataStructure.data?.length > 0) {
-          // Asumsi struktur JSON Structure memiliki field 'jabatan' dan 'nama'
-          structureText = dataStructure.data.map((item: any) => `- ${item.jabatan}: ${item.nama}`).join('\n');
+        if (resStructure.ok) {
+          const data = await resStructure.json();
+          if (data.status === 1 && data.data?.length > 0) {
+            // Field disesuaikan dengan skema database admin
+            unitStructure = data.data.map((item: any) => `- ${item.jabatanSpesifik || item.jabatan}: ${item.namaPengurus || item.nama}`).join('\n');
+          }
         }
+
+        // Gabungkan seluruh teks per unit ke dalam satu string besar
+        dynamicDataText += `\n[DATA DINAMIS UNIT: ${unit.toUpperCase()}]\nStruktur Organisasi:\n${unitStructure}\n\nPPDB:\n${unitPpdb}\n\nAgenda:\n${unitAgenda}\n\nBerita:\n${unitBerita}\n`;
+        
+      } catch (err) {
+        console.error(`Gagal mengambil data CMS untuk unit ${unit}:`, err);
       }
-    } catch (err) {
-      console.error("Gagal mengambil data dinamis CMS:", err);
-    }
+    }));
 
     const knowledgeBase = `
     === INFORMASI RESMI YAYASAN HIDAYATUT THALIBIN ===
@@ -63,37 +67,25 @@ export async function POST(req: Request) {
        - Yayasan Hidayatut Thalibin adalah lembaga pendidikan Islam terpadu (TK, MI, MTs, SMK).
        - Alamat Pusat: Jl Cilandak Tengah III/53 RT.001/001 Cilandak Barat, Jakarta Selatan 12430.
 
-    === DATA DINAMIS (DARI DATABASE ADMIN CMS) ===
-    
-    [STRUKTUR ORGANISASI SEKOLAH]
-    ${structureText}
-
-    [INFORMASI PPDB (PENERIMAAN PESERTA DIDIK BARU)]
-    ${ppdbText}
-
-    [AGENDA SEKOLAH TERDEKAT]
-    ${agendaText}
-
-    [BERITA TERBARU]
-    ${beritaText}
+    === REKAP DATA DINAMIS SELURUH UNIT (DARI DATABASE) ===
+    ${dynamicDataText}
     `;
 
     const result = streamText({
       model: groq('qwen/qwen3.8-27b'),
-      // @ts-expect-error: Mengabaikan peringatan tipe maxTokens yang belum diupdate di SDK
-      maxTokens: 500,
+      // @ts-expect-error: Mengabaikan peringatan tipe maxTokens
+      maxTokens: 600,
       system: `Kamu adalah A.B.I (Asisten Belajar Interaktif), asisten AI resmi Yayasan Hidayatut Thalibin.
       
       SUMBER INFORMASI UTAMA:
       ${knowledgeBase}
 
       ATURAN FORMAT PENULISAN (PENTING!):
-      1. JANGAN PERNAH menggunakan simbol Markdown seperti tanda pagar (#) atau tanda bintang (* / **) di dalam jawabanmu. Gunakan teks biasa dan baris baru (enter) agar rapi.
-      2. Jawablah dengan ringkas, padat, ramah, dan langsung pada intinya agar informasi cepat tersampaikan dan hemat token.
+      1. JANGAN PERNAH menggunakan simbol Markdown seperti tanda pagar (#) atau tanda bintang (* / **) di dalam jawabanmu. Gunakan teks biasa dan baris baru (enter) agar rapi di layar chat.
+      2. Jawablah dengan ringkas, padat, ramah, dan langsung pada intinya agar informasi cepat tersampaikan.
 
       PANDUAN ISI:
-      - Perkenalkan dirimu sebagai A.B.I jika ditanya.
-      - Gunakan data di bagian [DATA DINAMIS] untuk menjawab pertanyaan seputar pengurus/guru, biaya/syarat PPDB, berita, dan agenda.
+      - Jika user bertanya spesifik tentang unit tertentu (misal: "Siapa kepala SMK?"), cari jawabannya di bagian [DATA DINAMIS UNIT: SMK].
       - Tolak pertanyaan di luar konteks yayasan/sekolah dengan sopan. Jangan mengarang data.`,
       messages,
     });
