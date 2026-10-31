@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { streamText } from 'ai';
 import { groq } from '@ai-sdk/groq';
 
@@ -7,64 +8,74 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
+    // 1. Siapkan teks default jika database sedang kosong/error
+    let beritaText = "Belum ada berita terbaru.";
+    let agendaText = "Belum ada agenda terbaru.";
+    let ppdbText = "Data PPDB sedang diperbarui.";
+    let structureText = "Data struktur organisasi sedang diperbarui.";
+
+    // 2. Fetch data langsung dari Admin CMS (Berita, Agenda, PPDB, Structure)
+    try {
+      // Catatan: Ini contoh mengambil data untuk MTs. Silakan tambah fetch untuk MI/SMK jika diperlukan.
+      const [resBerita, resAgenda, resPpdb, resStructure] = await Promise.all([
+        fetch('https://admin-hidatha.vercel.app/api/public/mts/berita', { cache: 'no-store' }),
+        fetch('https://admin-hidatha.vercel.app/api/public/mts/agendas', { cache: 'no-store' }),
+        fetch('https://admin-hidatha.vercel.app/api/public/mts/ppdb', { cache: 'no-store' }),
+        fetch('https://admin-hidatha.vercel.app/api/public/mts/structure', { cache: 'no-store' })
+      ]);
+
+      if (resBerita.ok) {
+        const dataBerita = await resBerita.json();
+        if (dataBerita.data?.length > 0) {
+          beritaText = dataBerita.data.slice(0, 3).map((item: any) => `- ${item.judul}`).join('\n');
+        }
+      }
+
+      if (resAgenda.ok) {
+        const dataAgenda = await resAgenda.json();
+        if (dataAgenda.data?.length > 0) {
+          agendaText = dataAgenda.data.slice(0, 3).map((item: any) => `- ${item.judul} (Tgl: ${item.tanggal})`).join('\n');
+        }
+      }
+
+      if (resPpdb.ok) {
+        const dataPpdb = await resPpdb.json();
+        if (dataPpdb.data?.length > 0) {
+          // Asumsi struktur JSON PPDB memiliki field 'jalur', 'biaya', 'syarat'
+          ppdbText = dataPpdb.data.map((item: any) => `- Jalur ${item.jalur || 'Umum'}: Biaya Rp ${item.biaya || 0}. Syarat: ${item.syarat || 'Cek di web.'}`).join('\n');
+        }
+      }
+
+      if (resStructure.ok) {
+        const dataStructure = await resStructure.json();
+        if (dataStructure.data?.length > 0) {
+          // Asumsi struktur JSON Structure memiliki field 'jabatan' dan 'nama'
+          structureText = dataStructure.data.map((item: any) => `- ${item.jabatan}: ${item.nama}`).join('\n');
+        }
+      }
+    } catch (err) {
+      console.error("Gagal mengambil data dinamis CMS:", err);
+    }
+
     const knowledgeBase = `
     === INFORMASI RESMI YAYASAN HIDAYATUT THALIBIN ===
     1. PROFIL UMUM:
-       - Yayasan Hidayatut Thalibin adalah lembaga pendidikan Islam terpadu yang menyediakan layanan pendidikan dari tingkat TK, MI, MTs, hingga SMK.
+       - Yayasan Hidayatut Thalibin adalah lembaga pendidikan Islam terpadu (TK, MI, MTs, SMK).
        - Alamat Pusat: Jl Cilandak Tengah III/53 RT.001/001 Cilandak Barat, Jakarta Selatan 12430.
 
-    === 2. INFORMASI SMK HIDATHA JAKARTA (BISNIS & MANAJEMEN) ===
-    - VISI: Menjadikan SMK HIDATHA sebagai lembaga unggul dan religius untuk menghasilkan lulusan yang siap bersaing dan berkontribusi positif dalam dunia bisnis dan masyarakat.
-    - PROGRAM KEAHLIAN: 1. Akuntansi dan Keuangan Lembaga. 2. Pemasaran. 3. Manajemen Perkantoran dan Layanan Bisnis.
-    - FASILITAS SMK: Ruang Kelas AC, Lapangan Olahraga, Laboratorium Komputer, Perpustakaan, Aula Sekolah, Mushola, Bisnis Center, UKS.
-    - SYARAT PENDAFTARAN SMK: Mengisi formulir, fotokopi Akta Kelahiran, KK, KTP orang tua, dan membayar biaya pendaftaran.
-    - JADWAL PENDAFTARAN: Februari 2025 s/d Juli 2025 (Online atau Offline).
-    - BIAYA PENDIDIKAN SMK (UANG PANGKAL): Uang Gedung Rp 1.725.000 + Seragam Rp 660.000 = Total Rp 2.385.000. Pembayaran dapat diangsur sebelum Agustus 2025. Dapatkan promo gratis Goodie Bag & Payung.
-    - KONTAK SMK: Pak Kadavi (08994668054). IG/TikTok: @smkshidatha_official.
-
-    === 3. INFORMASI MTS HIDAYATUT THOLIBIN ===
-    - VISI: Terwujudnya murid yang beriman, berwawasan ilmu pengetahuan, dan berakhalaqul karimah.
-    - FASILITAS MTS: Ruang kelas ber-AC, Musholla, Lapangan olahraga, Kantin sehat HALAL, Lab komputer, Aula serbaguna, Bisnis Center (BC).
-    - EKSTRAKURIKULER MTS: Pramuka, Muhadharah, Hadroh, Tari Saman, Tahfidz, Paskibra.
-    - SYARAT PENDAFTARAN MTS: Mengisi formulir, fotokopi KK, Akta Kelahiran, KTP orang tua, Ijazah/SKL SD/MI.
-    - BIAYA PENDAFTARAN MTS: 
-      * JALUR UMUM: Formulir Rp 125.000 | SPP Juli 2026 Rp 225.000 | Uang Gedung Rp 625.000.
-      * JALUR ALUMNI MI HIDATHA: Formulir Rp 125.000 | SPP Juli 2026 Rp 225.000 | Uang Gedung Rp 0.
-    - KONTAK MTS: 0852 1034 4397 / 0851 7521 0066 (IG/TikTok: @mts_tholibin_53).
-
-    === 4. INFORMASI MI (MADRASAH IBTIDAIYAH) HIDAYATUT THALIBIN ===
-    - KEUNGGULAN: Biaya terjangkau, kelas ber-AC, program Tahfizh Juz 30.
-    - FASILITAS MI: Lab komputer, kelas ber-AC, perpustakaan, aula, bisnis center, musholla, lapangan, kantin.
-    - EKSTRAKURIKULER MI: Tahfiz Juz 30, Pramuka, mewarnai, komputer, English Club, kaligrafi, silat, futsal, hadroh.
-    - SYARAT PENDAFTARAN MI: Mengisi formulir, fotokopi KK, Akta Kelahiran, KTP, ijazah TK/RA, DP minimal 50%.
-    - BIAYA PENDAFTARAN MI: 
-      * JALUR UMUM: Formulir Rp 100.000 | SPP Juli 2026 Rp 200.000 | Uang Gedung Rp 1.200.000.
-      * JALUR ALUMNI TK HIDATHA: Formulir Rp 100.000 | SPP Juli 2026 Rp 200.000 | Uang Gedung Rp 300.000.
+    === DATA DINAMIS (DARI DATABASE ADMIN CMS) ===
     
-    === 5. STRUKTUR ORGANISASI MI (MADRASAH IBTIDAIYAH) ===
-    - Kepala MI: Ahmad Jailani, S.Pd.I
-    - Komite MI: Meliza Febri
-    - Tata Usaha: Ulvaniswah
-    - Wakil Koordinator Kurikulum / Bendahara: Zara Zarini, S.Si, M.Pd
-    - Wali Kelas IA: Afifah Salsabilah, S.Pd
-    - Wali Kelas IB: Henry Riani, S.Pd
-    - Wali Kelas II: Ubaidah, S.Pd.I
-    - Wali Kelas IIIA: Haryanti Murdi, S.Pd
-    - Wali Kelas IIIB: Ahmad Musthofa Kamal, S.Pd
-    - Wali Kelas IVA: Salsabila Azzahra, S.Pd.I
-    - Wali Kelas IVB: Mumtazah, S.Pd
-    - Wali Kelas V: Zara Zarini, S.Si, M.Pd
-    - Guru Kelas V: Novita Ika Indra
+    [STRUKTUR ORGANISASI SEKOLAH]
+    ${structureText}
 
-    === 6. STRUKTUR ORGANISASI MTS HIDAYATUT THOLIBIN ===
-    - Kepala Madrasah: Dra. Tasmiyah
-    - Ketua Komite: Tri Masnawati, S.E.
-    - Kepala TU: Buchori
-    - Bidang Kurikulum: Siti Lia Mudrika, M.A.
-    - Bidang Kesiswaan: Fathimah, S.Ag.
-    - Wali Kelas 7: Romiyah, S.Ag.
-    - Wali Kelas 8: Endah Suryanti Ardhi, S.Pd.
-    - Wali Kelas 9: Fathimah, S.Ag.
+    [INFORMASI PPDB (PENERIMAAN PESERTA DIDIK BARU)]
+    ${ppdbText}
+
+    [AGENDA SEKOLAH TERDEKAT]
+    ${agendaText}
+
+    [BERITA TERBARU]
+    ${beritaText}
     `;
 
     const result = streamText({
@@ -77,12 +88,12 @@ export async function POST(req: Request) {
       ${knowledgeBase}
 
       ATURAN FORMAT PENULISAN (PENTING!):
-      1. JANGAN PERNAH menggunakan simbol Markdown seperti tanda pagar (#) atau tanda bintang (* / **) di dalam jawabanmu. Gunakan teks biasa dan baris baru (enter) agar rapi di layar chat.
+      1. JANGAN PERNAH menggunakan simbol Markdown seperti tanda pagar (#) atau tanda bintang (* / **) di dalam jawabanmu. Gunakan teks biasa dan baris baru (enter) agar rapi.
       2. Jawablah dengan ringkas, padat, ramah, dan langsung pada intinya agar informasi cepat tersampaikan dan hemat token.
 
       PANDUAN ISI:
       - Perkenalkan dirimu sebagai A.B.I jika ditanya.
-      - Tangani pertanyaan seputar unit MI, MTs, SMK, serta struktur organisasi guru dengan ramah dan akurat sesuai data di atas.
+      - Gunakan data di bagian [DATA DINAMIS] untuk menjawab pertanyaan seputar pengurus/guru, biaya/syarat PPDB, berita, dan agenda.
       - Tolak pertanyaan di luar konteks yayasan/sekolah dengan sopan. Jangan mengarang data.`,
       messages,
     });
