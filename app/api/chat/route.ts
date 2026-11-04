@@ -19,10 +19,10 @@ export async function POST(request: Request) {
     await dbConnect();
     const collection = mongoose.connection.db!.collection('knowledge_bases');
 
-    // 2. Ubah pertanyaan user menjadi vektor 384 dimensi secara semantik
+    // 2. Ubah pertanyaan user menjadi vektor 384 dimensi
     const queryVector = await getSemanticEmbedding(latestMessage);
 
-    // 3. Jalankan Atlas Vector Search (Limit dinaikkan agar potongan chunks tersapu maksimal)
+    // 3. Jalankan Atlas Vector Search
     const pipeline = [
       {
         $vectorSearch: {
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
           path: 'embedding',
           queryVector: queryVector,
           numCandidates: 100,
-          limit: 8, // Naikkan ke 8 agar banyak potongan chunk relevan yang ikut tertarik
+          limit: 8,
         },
       },
       {
@@ -44,12 +44,35 @@ export async function POST(request: Request) {
 
     const searchResults = await collection.aggregate(pipeline).toArray();
 
-    // 4. Susun konteks pengetahuan untuk diumpankan ke AI dari hasil chunks
+    // 4. PENGAMAN HYBRID: Jika hasil vektor kosong atau kurang spesifik, 
+    // lakukan backup pencarian teks reguler (Regex) agar data penting tidak pernah terlewat.
+    if (searchResults.length === 0 || !searchResults.some((doc: any) => doc.content.toLowerCase().includes(latestMessage.toLowerCase().split(" ")[0]))) {
+      const keywords = latestMessage.split(" ").filter((w: string) => w.length > 3);
+      if (keywords.length > 0) {
+        const regexQuery = keywords.join('|');
+        const textResults = await collection.find({
+          $or: [
+            { title: { $regex: regexQuery, $options: 'i' } },
+            { content: { $regex: regexQuery, $options: 'i' } }
+          ]
+        }).limit(5).toArray();
+        
+        // Gabungkan hasil vector search dan text search secara unik
+        const existingIds = new Set(searchResults.map((d: any) => d._id.toString()));
+        for (const doc of textResults) {
+          if (!existingIds.has((doc._id as any).toString())) {
+            searchResults.push(doc);
+          }
+        }
+      }
+    }
+
+    // 5. Susun konteks pengetahuan untuk diumpankan ke AI dari hasil chunks
     const contextText = searchResults
-      .map((doc: any) => `- ${doc.title}:\n${doc.content}`)
+      .map((doc: any) => `\n${doc.title}:\n${doc.content}`)
       .join('\n\n');
 
-    // 5. Panggil Groq API (Model Qwen)
+    // 6. Panggil Groq API (Model Qwen)
     const GROQ_API_KEY = process.env.GROQ_API_KEY;
     if (!GROQ_API_KEY) {
       throw new Error('GROQ_API_KEY belum disetel di .env.local');
@@ -75,7 +98,7 @@ ${contextText}`;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'qwen/qwen3.8-27b', // Model Qwen yang sesuai dengan Groq Playground Anda
+        model: 'qwen/qwen3.8-27b',
         messages: [
           { role: 'system', content: systemPrompt },
           ...messages.map((m: any) => ({ role: m.role, content: m.content }))
@@ -92,7 +115,6 @@ ${contextText}`;
     const groqData = await groqResponse.json();
     const replyText = groqData.choices[0]?.message?.content || 'Maaf, saya tidak dapat menghasilkan jawaban saat ini.';
 
-    // Kembalikan respons teks langsung
     return new NextResponse(replyText);
 
   } catch (error: any) {
