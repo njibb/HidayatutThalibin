@@ -16,6 +16,14 @@ const nextConfig: NextConfig = {
     },
   },
   serverExternalPackages: ["@huggingface/transformers", "onnxruntime-node"],
+  
+  // Tambahkan konfigurasi webpack agar Vercel tidak error saat bundling modul native
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = [...(config.externals || []), 'onnxruntime-node'];
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
