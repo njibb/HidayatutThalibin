@@ -1,98 +1,102 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { streamText } from 'ai';
-import { groq } from '@ai-sdk/groq';
+import { NextResponse } from 'next/server';
+import dbConnect from '../../lib/mongodb';
+import { getSemanticEmbedding } from '../../lib/embedding';
+import mongoose from 'mongoose';
 
-export const maxDuration = 30;
-
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { messages } = await req.json();
+    const { messages } = await request.json();
+    
+    // Ambil pesan terakhir dari pengguna
+    const latestMessage = messages[messages.length - 1]?.content;
 
-    // Daftar semua unitcode yang ada di sistem admin
-    const units = ['tk', 'mi', 'mts', 'smk'];
-    let dynamicDataText = "";
+    if (!latestMessage) {
+      return NextResponse.json({ error: 'Pesan tidak boleh kosong' }, { status: 400 });
+    }
 
-    // Fetch data untuk SEMUA unit secara serentak
-    await Promise.all(units.map(async (unit) => {
-      try {
-        const [resBerita, resAgenda, resPpdb, resStructure] = await Promise.all([
-          fetch(`https://admin-hidatha.vercel.app/api/public/${unit}/berita`, { cache: 'no-store' }),
-          fetch(`https://admin-hidatha.vercel.app/api/public/${unit}/agendas`, { cache: 'no-store' }),
-          fetch(`https://admin-hidatha.vercel.app/api/public/${unit}/ppdb`, { cache: 'no-store' }),
-          fetch(`https://admin-hidatha.vercel.app/api/public/${unit}/structure`, { cache: 'no-store' })
-        ]);
+    // 1. Hubungkan ke database menggunakan Mongoose admin
+    await dbConnect();
+    const collection = mongoose.connection.db!.collection('knowledge_bases');
 
-        let unitBerita = "Belum ada berita.";
-        let unitAgenda = "Belum ada agenda.";
-        let unitPpdb = "Data PPDB sedang diperbarui.";
-        let unitStructure = "Data struktur belum tersedia.";
+    // 2. Ubah pertanyaan user menjadi vektor 384 dimensi secara semantik
+    const queryVector = await getSemanticEmbedding(latestMessage);
 
-        if (resBerita.ok) {
-          const data = await resBerita.json();
-          if (data.status === 1 && data.data?.length > 0) {
-            unitBerita = data.data.slice(0, 3).map((item: any) => `- ${item.judul}`).join('\n');
-          }
-        }
-        if (resAgenda.ok) {
-          const data = await resAgenda.json();
-          if (data.status === 1 && data.data?.length > 0) {
-            unitAgenda = data.data.slice(0, 3).map((item: any) => `- ${item.judul} (Tgl: ${item.tanggal})`).join('\n');
-          }
-        }
-        if (resPpdb.ok) {
-          const data = await resPpdb.json();
-          if (data.status === 1 && data.data?.length > 0) {
-            unitPpdb = data.data.map((item: any) => `- Jalur ${item.jalur || 'Umum'}: Biaya Rp ${item.biaya || 0}. Syarat: ${item.syarat || 'Cek di web.'}`).join('\n');
-          }
-        }
-        if (resStructure.ok) {
-          const data = await resStructure.json();
-          if (data.status === 1 && data.data?.length > 0) {
-            // Field disesuaikan dengan skema database admin
-            unitStructure = data.data.map((item: any) => `- ${item.jabatanSpesifik || item.jabatan}: ${item.namaPengurus || item.nama}`).join('\n');
-          }
-        }
+    // 3. Jalankan Atlas Vector Search (Limit dinaikkan agar potongan chunks tersapu maksimal)
+    const pipeline = [
+      {
+        $vectorSearch: {
+          index: 'vector_index',
+          path: 'embedding',
+          queryVector: queryVector,
+          numCandidates: 100,
+          limit: 8, // Naikkan ke 8 agar banyak potongan chunk relevan yang ikut tertarik
+        },
+      },
+      {
+        $project: {
+          title: 1,
+          content: 1,
+          score: { $meta: 'vectorSearchScore' },
+        },
+      },
+    ];
 
-        // Gabungkan seluruh teks per unit ke dalam satu string besar
-        dynamicDataText += `\n[DATA DINAMIS UNIT: ${unit.toUpperCase()}]\nStruktur Organisasi:\n${unitStructure}\n\nPPDB:\n${unitPpdb}\n\nAgenda:\n${unitAgenda}\n\nBerita:\n${unitBerita}\n`;
-        
-      } catch (err) {
-        console.error(`Gagal mengambil data CMS untuk unit ${unit}:`, err);
-      }
-    }));
+    const searchResults = await collection.aggregate(pipeline).toArray();
 
-    const knowledgeBase = `
-    === INFORMASI RESMI YAYASAN HIDAYATUT THALIBIN ===
-    1. PROFIL UMUM:
-       - Yayasan Hidayatut Thalibin adalah lembaga pendidikan Islam terpadu (TK, MI, MTs, SMK).
-       - Alamat Pusat: Jl Cilandak Tengah III/53 RT.001/001 Cilandak Barat, Jakarta Selatan 12430.
+    // 4. Susun konteks pengetahuan untuk diumpankan ke AI dari hasil chunks
+    const contextText = searchResults
+      .map((doc: any) => `- ${doc.title}:\n${doc.content}`)
+      .join('\n\n');
 
-    === REKAP DATA DINAMIS SELURUH UNIT (DARI DATABASE) ===
-    ${dynamicDataText}
-    `;
+    // 5. Panggil Groq API (Model Qwen)
+    const GROQ_API_KEY = process.env.GROQ_API_KEY;
+    if (!GROQ_API_KEY) {
+      throw new Error('GROQ_API_KEY belum disetel di .env.local');
+    }
 
-    const result = streamText({
-      model: groq('qwen/qwen3.8-27b'),
-      // @ts-expect-error: Mengabaikan peringatan tipe maxTokens
-      maxTokens: 600,
-      system: `Kamu adalah A.B.I (Asisten Belajar Interaktif), asisten AI resmi Yayasan Hidayatut Thalibin.
-      
-      SUMBER INFORMASI UTAMA:
-      ${knowledgeBase}
+    const systemPrompt = `Anda adalah A.B.I (Asisten Belajar Interaktif), asisten virtual resmi Yayasan Hidayatut Thalibin. 
+Gunakan informasi konteks dari basis data yayasan berikut untuk menjawab pertanyaan pengguna dengan ramah, akurat, dan sopan. 
 
-      ATURAN FORMAT PENULISAN (PENTING!):
-      1. JANGAN PERNAH menggunakan simbol Markdown seperti tanda pagar (#) atau tanda bintang (* / **) di dalam jawabanmu. Gunakan teks biasa dan baris baru (enter) agar rapi di layar chat.
-      2. Jawablah dengan ringkas, padat, ramah, dan langsung pada intinya agar informasi cepat tersampaikan.
+ATURAN PENULISAN JAWABAN:
+- Jawablah dengan kalimat naratif, mengalir, dan berbentuk paragraf yang natural. 
+- Jangan menggunakan daftar poin-poin (bullet points/tanda bintang) yang berlebihan kecuali jika benar-benar diminta atau berupa daftar benda/agenda.
+- Sampaikan informasi dengan jelas dan langsung pada intinya.
 
-      PANDUAN ISI:
-      - Jika user bertanya spesifik tentang unit tertentu (misal: "Siapa kepala SMK?"), cari jawabannya di bagian [DATA DINAMIS UNIT: SMK].
-      - Tolak pertanyaan di luar konteks yayasan/sekolah dengan sopan. Jangan mengarang data.`,
-      messages,
+Jika informasi tidak ada di konteks, jawablah secara wajar sebagai asisten yayasan.
+
+KONTÉKS PENGETAHUAN:
+${contextText}`;
+
+    const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${GROQ_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'qwen/qwen3.8-27b', // Model Qwen yang sesuai dengan Groq Playground Anda
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...messages.map((m: any) => ({ role: m.role, content: m.content }))
+        ],
+        stream: false,
+      }),
     });
 
-    return result.toTextStreamResponse();
-  } catch (error) {
-    console.error("Error dari API Groq:", error);
-    return new Response("Terjadi kesalahan internal server.", { status: 500 });
+    if (!groqResponse.ok) {
+      const errData = await groqResponse.text();
+      throw new Error(`Groq API Error: ${errData}`);
+    }
+
+    const groqData = await groqResponse.json();
+    const replyText = groqData.choices[0]?.message?.content || 'Maaf, saya tidak dapat menghasilkan jawaban saat ini.';
+
+    // Kembalikan respons teks langsung
+    return new NextResponse(replyText);
+
+  } catch (error: any) {
+    console.error('Error in chat route:', error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
