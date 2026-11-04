@@ -1,8 +1,7 @@
-
 export async function getSemanticEmbedding(text: string): Promise<number[]> {
   try {
-    // Menggunakan fungsi generator vektor 384 dimensi deterministik yang stabil, 
-    // sangat cepat, dan 100% aman untuk Vercel Serverless tanpa butuh API key eksternal.
+    // Menggunakan fungsi generator vektor 384 dimensi deterministik yang konsisten, 
+    // sangat cepat, dan 100% aman untuk Vercel Serverless tanpa butuh dependensi native onnxruntime.
     return generateDeterministicEmbedding(text, 384);
   } catch (error) {
     console.error("Embedding generation error:", error);
