@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/sync-single/route.ts
 import { NextResponse } from 'next/server';
-import clientPromise from '../../lib/mongodb';
+import dbConnect from '../../lib/mongodb'; // Ganti dari clientPromise ke dbConnect Mongoose
+import mongoose from 'mongoose';
 
 function chunkText(text: string, maxLength: number = 400): string[] {
   if (!text) return [];
@@ -43,9 +44,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: 'Invalid payload: missing identifier/_id' }, { status: 400 });
     }
 
-    // Menggunakan (client as any) untuk bypass error tipe data TypeScript pada clientPromise
-    const client = await clientPromise;
-    const db = (client as any).db('yayasan_db'); 
+    // 1. Hubungkan database menggunakan dbConnect Mongoose
+    await dbConnect();
+    
+    // 2. Akses koleksi langsung via mongoose.connection.db
+    const db = mongoose.connection.db;
+    if (!db) {
+      throw new Error('Database connection not established');
+    }
     const knowledgeCollection = db.collection('knowledge_bases');
 
     if (action === 'DELETE') {
@@ -53,13 +59,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, message: 'Knowledge chunks deleted successfully' });
     }
 
-    // 1. Bersihkan chunk lama berdasarkan identifier agar tidak duplikat
+    // 3. Bersihkan chunk lama berdasarkan identifier agar tidak duplikat
     await knowledgeCollection.deleteMany({ identifier: String(docId) });
 
-    // 2. Gabungkan teks penting
+    // 4. Gabungkan teks penting
     const rawText = `Kategori: ${collectionName}\nJudul/Nama: ${data.title || data.name || ''}\nIsi: ${data.content || data.description || ''}`;
     
-    // 3. Lakukan Chunking & Embedding
+    // 5. Lakukan Chunking & Embedding
     const textChunks = chunkText(rawText, 400);
     const bulkOperations = [];
 
