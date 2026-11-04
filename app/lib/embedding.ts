@@ -1,26 +1,21 @@
-export async function getSemanticEmbedding(text: string): Promise<number[]> {
-  try {
-    // Menggunakan fungsi generator vektor 384 dimensi deterministik yang konsisten, 
-    // sangat cepat, dan 100% aman untuk Vercel Serverless tanpa butuh dependensi native onnxruntime.
-    return generateDeterministicEmbedding(text, 384);
-  } catch (error) {
-    console.error("Embedding generation error:", error);
-    return generateDeterministicEmbedding(text, 384);
+
+function generateEmbedding(text: string): number[] {
+  const vector = new Array(384).fill(0);
+  if (!text) return vector;
+  for (let i = 0; i < text.length; i++) {
+    const charCode = text.charCodeAt(i);
+    const index = i % 384;
+    vector[index] += charCode / 255.0;
   }
+  const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
+  return magnitude === 0 ? vector : vector.map(val => val / magnitude);
 }
 
-// Fungsi pengaman matematika deterministik untuk menghasilkan embedding 384d yang konsisten dari teks
-function generateDeterministicEmbedding(text: string, dimensions: number): number[] {
-  let hash = 0;
-  for (let i = 0; i < text.length; i++) {
-    hash = (hash << 5) - hash + text.charCodeAt(i);
-    hash |= 0;
+export async function getSemanticEmbedding(text: string): Promise<number[]> {
+  try {
+    return generateEmbedding(text);
+  } catch (error) {
+    console.error("Embedding generation error:", error);
+    return new Array(384).fill(0);
   }
-  
-  const vector: number[] = [];
-  for (let i = 0; i < dimensions; i++) {
-    const val = Math.sin(hash + i) * 10000;
-    vector.push(val - Math.floor(val));
-  }
-  return vector;
 }

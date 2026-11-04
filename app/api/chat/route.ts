@@ -44,10 +44,9 @@ export async function POST(request: Request) {
 
     const searchResults = await collection.aggregate(pipeline).toArray();
 
-    // 4. PENGAMAN HYBRID: Jika hasil vektor kosong atau kurang spesifik, 
-    // lakukan backup pencarian teks reguler (Regex) agar data penting tidak pernah terlewat.
+    // 4. PENGAMAN HYBRID: Backup pencarian teks reguler (Regex) dengan filter minimal 2 karakter (agar kata "mts", "mi", "tk" tidak terbuang)
     if (searchResults.length === 0 || !searchResults.some((doc: any) => doc.content.toLowerCase().includes(latestMessage.toLowerCase().split(" ")[0]))) {
-      const keywords = latestMessage.split(" ").filter((w: string) => w.length > 3);
+      const keywords = latestMessage.split(" ").filter((w: string) => w.length >= 2);
       if (keywords.length > 0) {
         const regexQuery = keywords.join('|');
         const textResults = await collection.find({
