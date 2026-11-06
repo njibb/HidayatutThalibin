@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/sync-single/route.ts
 import { NextResponse } from 'next/server';
-import dbConnect from '../../lib/mongodb'; // Ganti dari clientPromise ke dbConnect Mongoose
+import dbConnect from '../../lib/mongodb'; 
+import { getSemanticEmbedding } from '../../lib/embedding';// Ganti dari clientPromise ke dbConnect Mongoose
 import mongoose from 'mongoose';
 
 function chunkText(text: string, maxLength: number = 400): string[] {
@@ -15,17 +16,7 @@ function chunkText(text: string, maxLength: number = 400): string[] {
   return chunks;
 }
 
-function generateEmbedding(text: string): number[] {
-  const vector = new Array(384).fill(0);
-  if (!text) return vector;
-  for (let i = 0; i < text.length; i++) {
-    const charCode = text.charCodeAt(i);
-    const index = i % 384;
-    vector[index] += charCode / 255.0;
-  }
-  const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
-  return magnitude === 0 ? vector : vector.map(val => val / magnitude);
-}
+
 
 export async function POST(request: Request) {
   try {
@@ -71,7 +62,7 @@ export async function POST(request: Request) {
 
     for (let i = 0; i < textChunks.length; i++) {
       const chunk = textChunks[i];
-      const embedding = generateEmbedding(chunk);
+     const embedding = await getSemanticEmbedding(chunk);
 
       bulkOperations.push({
         insertOne: {
