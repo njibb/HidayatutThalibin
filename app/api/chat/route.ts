@@ -106,6 +106,7 @@ ${contextText}`;
       },
       body: JSON.stringify({
         model: 'qwen/qwen3.8-27b',
+        max_tokens: 400,
         messages: [
           { role: 'system', content: systemPrompt },
           ...messages.map((m: any) => ({ role: m.role, content: m.content }))
