@@ -44,10 +44,7 @@ export async function POST(request: Request) {
 
     const searchResults = await collection.aggregate(pipeline).toArray();
 
-    // 4. PENGAMAN HYBRID: Backup pencarian teks reguler (Regex) jika hasil vector search sedikit
-    if (searchResults.length < 3) {
-      // Hilangkan tanda baca dan kata hubung/kata tanya umum agar regex tidak menarik data sampah (noise)
-      // 4. PENGAMAN HYBRID (TRUE HYBRID BOOSTER): Selalu jalankan pencarian teks AND logic
+    // 4. PENGAMAN HYBRID (TRUE HYBRID BOOSTER): SELALU JALANKAN TANPA SYARAT IF
     const stopWords = ["siapa", "apa", "kapan", "dimana", "bagaimana", "berapa", "dan", "yang", "di", "ke", "dari", "untuk", "adalah"];
     const keywords = latestMessage.toLowerCase().replace(/[?.,]/g, '').split(" ")
       .filter((w: string) => w.length >= 2 && !stopWords.includes(w));
@@ -72,7 +69,6 @@ export async function POST(request: Request) {
           searchResults.push(doc); // Tambahkan dokumen pasti ke dalam konteks AI
         }
       }
-    }
     }
 
     // 5. Susun konteks pengetahuan untuk diumpankan ke AI dari hasil chunks
