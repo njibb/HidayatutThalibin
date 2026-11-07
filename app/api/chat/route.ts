@@ -76,6 +76,9 @@ export async function POST(request: Request) {
       .map((doc: any) => `\n${doc.title}:\n${doc.content}`)
       .join('\n\n');
 
+    // MENCETAK KONTEKS KE TERMINAL UNTUK KEBUTUHAN EVALUASI RAGAS
+    console.log("=== KONTEKS RAGAS ===", contextText);
+
     // 6. Panggil Groq API (Model Qwen)
     const GROQ_API_KEY = process.env.GROQ_API_KEY;
     if (!GROQ_API_KEY) {
