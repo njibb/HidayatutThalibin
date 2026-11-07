@@ -47,27 +47,32 @@ export async function POST(request: Request) {
     // 4. PENGAMAN HYBRID: Backup pencarian teks reguler (Regex) jika hasil vector search sedikit
     if (searchResults.length < 3) {
       // Hilangkan tanda baca dan kata hubung/kata tanya umum agar regex tidak menarik data sampah (noise)
-      const stopWords = ["siapa", "apa", "kapan", "dimana", "bagaimana", "berapa", "dan", "yang", "di", "ke", "dari", "untuk", "adalah"];
-      const keywords = latestMessage.toLowerCase().replace(/[?.,]/g, '').split(" ")
-        .filter((w: string) => w.length >= 2 && !stopWords.includes(w));
+      // 4. PENGAMAN HYBRID (TRUE HYBRID BOOSTER): Selalu jalankan pencarian teks AND logic
+    const stopWords = ["siapa", "apa", "kapan", "dimana", "bagaimana", "berapa", "dan", "yang", "di", "ke", "dari", "untuk", "adalah"];
+    const keywords = latestMessage.toLowerCase().replace(/[?.,]/g, '').split(" ")
+      .filter((w: string) => w.length >= 2 && !stopWords.includes(w));
+    
+    if (keywords.length > 0) {
+      // Gunakan $and agar dokumen yang ditarik harus mengandung SEMUA kata kunci pencarian
+      const andConditions = keywords.map((kw: string) => ({
+        $or: [
+          { title: { $regex: kw, $options: 'i' } },
+          { content: { $regex: kw, $options: 'i' } }
+        ]
+      }));
+
+      const textResults = await collection.find({
+        $and: andConditions
+      }).limit(3).toArray();
       
-      if (keywords.length > 0) {
-        const regexQuery = keywords.join('|');
-        const textResults = await collection.find({
-          $or: [
-            { title: { $regex: regexQuery, $options: 'i' } },
-            { content: { $regex: regexQuery, $options: 'i' } }
-          ]
-        }).limit(5).toArray();
-        
-        // Gabungkan hasil vector search dan text search secara unik
-        const existingIds = new Set(searchResults.map((d: any) => d._id.toString()));
-        for (const doc of textResults) {
-          if (!existingIds.has((doc._id as any).toString())) {
-            searchResults.push(doc);
-          }
+      // Gabungkan hasil vector search dan text search secara unik
+      const existingIds = new Set(searchResults.map((d: any) => d._id.toString()));
+      for (const doc of textResults) {
+        if (!existingIds.has((doc._id as any).toString())) {
+          searchResults.push(doc); // Tambahkan dokumen pasti ke dalam konteks AI
         }
       }
+    }
     }
 
     // 5. Susun konteks pengetahuan untuk diumpankan ke AI dari hasil chunks
