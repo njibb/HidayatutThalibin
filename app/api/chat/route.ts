@@ -46,7 +46,7 @@ export async function POST(request: Request) {
 
     // 4. PENGAMAN HYBRID (TRUE HYBRID BOOSTER): SELALU JALANKAN TANPA SYARAT IF
     const stopWords = ["siapa", "apa", "kapan", "dimana", "bagaimana", "berapa", "dan", "yang", "di", "ke", "dari", "untuk", "adalah"];
-    const keywords = latestMessage.toLowerCase().replace(/[?.,]/g, '').split(" ")
+    const keywords = latestMessage.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(" ")
       .filter((w: string) => w.length >= 2 && !stopWords.includes(w));
     
     if (keywords.length > 0) {
