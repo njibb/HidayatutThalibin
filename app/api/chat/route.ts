@@ -44,9 +44,13 @@ export async function POST(request: Request) {
 
     const searchResults = await collection.aggregate(pipeline).toArray();
 
-    // 4. PENGAMAN HYBRID: Backup pencarian teks reguler (Regex) dengan filter minimal 2 karakter (agar kata "mts", "mi", "tk" tidak terbuang)
-    if (searchResults.length === 0 || !searchResults.some((doc: any) => doc.content.toLowerCase().includes(latestMessage.toLowerCase().split(" ")[0]))) {
-      const keywords = latestMessage.split(" ").filter((w: string) => w.length >= 2);
+    // 4. PENGAMAN HYBRID: Backup pencarian teks reguler (Regex) jika hasil vector search sedikit
+    if (searchResults.length < 3) {
+      // Hilangkan tanda baca dan kata hubung/kata tanya umum agar regex tidak menarik data sampah (noise)
+      const stopWords = ["siapa", "apa", "kapan", "dimana", "bagaimana", "berapa", "dan", "yang", "di", "ke", "dari", "untuk", "adalah"];
+      const keywords = latestMessage.toLowerCase().replace(/[?.,]/g, '').split(" ")
+        .filter((w: string) => w.length >= 2 && !stopWords.includes(w));
+      
       if (keywords.length > 0) {
         const regexQuery = keywords.join('|');
         const textResults = await collection.find({
