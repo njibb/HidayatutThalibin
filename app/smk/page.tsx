@@ -93,7 +93,7 @@ export default function SMKPage() {
             </ScrollReveal>
 
       <ScrollReveal delay={0.1}>
-        <UnitProgram programs={smkData.excellencePrograms} theme="purple" bgImage="/unit-smk.jpg" />
+        <UnitProgram programs={smkData.excellencePrograms} theme="purple" bgImage="/smkbg.png" />
       </ScrollReveal>
 
       <ScrollReveal>
