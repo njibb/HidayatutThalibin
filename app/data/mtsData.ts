@@ -11,15 +11,15 @@ export const mtsData = {
   shortName: "MTs Hidayatut Tholibin",
   code: "MTs",
   category: "Madrasah Tsanawiyah (Setingkat SMP)",
-  tagline: "Merawat Tradisi, Merespon Modernisasi — Membentuk Generasi Beriman, Berwawasan Ilmu, dan Berakhlakul Karimah.",
+  tagline: "Merawat Tradisi Merespon Modernisasi.",
   profile: "Madrasah Tsanawiyah (MTs) Hidayatut Tholibin merupakan lembaga pendidikan menengah pertama di bawah naungan Yayasan Hidayatut Tholibin Jakarta Selatan. MTs Hidayatut Tholibin memadukan pendidikan Islam yang kuat melalui pembiasaan keagamaan harian dengan penguasaan ilmu pengetahuan, teknologi, serta pengembangan karakter peserta didik.",
-  vision: "“Beriman dan bertakwa, berwawasan ilmu pengetahuan, serta berakhlakul karimah”",
+  vision: "Terwujudnya Murid yang beriman, berwawasan ilmu pengetahuan, dan berakhlaqul karimah",
   missions: [
-    "Mewujudkan lingkungan dan perilaku religius dengan mengamalkan dan menghayati nilai-nilai ajaran agama Islam.",
-    "Mewujudkan nilai-nilai akhlakul karimah di lingkungan madrasah dan membudayakan budaya 7S (Salam, Senyum, Sapa, Sopan, Santun, Semangat, Sportif).",
-    "Menciptakan kondisi lingkungan pembelajaran yang aktif, kreatif, efektif, inovatif, kondusif, dan menyenangkan.",
-    "Membimbing dan mengembangkan minat serta bakat peserta didik melalui kegiatan intrakurikuler dan ekstrakurikuler secara optimal.",
-    "Mengoptimalkan potensi akademik serta meningkatkan profesionalisme tenaga pendidik sesuai perkembangan dunia pendidikan."
+    "Mewujudkan lingkungan dan perilaku religius dengan mengamankan nilai Ahlusunnah Wal Jamaah",
+    "Mewujudkan nilai-nilai akhlaqul karimah di lingkungan sekolah",
+    "Membudayakan 7S (senyum,salam,salim,sapa,sopan,santun,semangat",
+    "Membudayakan susasana lingkungan madrasah yang bersih, sehat, indah, dan islami.",
+    "Menciptakan kondisi lingkungan pembelajaran yang aktif, kreatif, inovatif, dan menyenangkan serta nyaman dan."
   ],
 
   excellencePrograms: [
@@ -60,41 +60,42 @@ export const mtsData = {
     }
   ],
 
-  facilities: [
+ facilities: [
     { 
-      name: "Ruang Kelas Ber-AC", 
-      desc: "Suasana belajar yang sejuk, nyaman, dan kondusif bagi siswa.",
+      name: "Laboratorium Komputer", 
       image: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "Musholla", 
-      desc: "Pusat kegiatan ibadah harian dan pembinaan keagamaan siswa.",
-      image: "https://images.unsplash.com/photo-1564769625867-0c52119ed3c3?auto=format&fit=crop&w=800&q=80" 
+      name: "Ruang Kelas Ber AC dan nyaman", 
+      image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "Lapangan Olahraga Multifungsi", 
-      desc: "Sarana aktivitas fisik, upacara, dan pengembangan minat olahraga.",
-      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
-    },
-    { 
-      name: "Kantin Sehat Bersertifikat Halal", 
-      desc: "Menyediakan makanan dan minuman yang higienis serta bergizi.",
-      image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80" 
-    },
-    { 
-      name: "Laboratorium Komputer", 
-      desc: "Pusat praktik TIK dan penunjang program Madrasah Digital.",
+      name: "Perpustakaan Lengkap", 
       image: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "Aula Serbaguna", 
-      desc: "Ruangan besar untuk kegiatan rapat, pentas seni, dan acara madrasah.",
-      image: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80" 
+      name: "Ekstraulikuler Unggulan", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "Bisnis Center (BC)", 
-      desc: "Sarana pelatihan kewirausahaan praktis bagi peserta didik.",
-      image: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80" 
+      name: "Aula Serbaguna", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Bisnis Center", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Musholla", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Lapangan Olahraga Multifungsi", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Kantin Sekolah", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
     }
   ],
 

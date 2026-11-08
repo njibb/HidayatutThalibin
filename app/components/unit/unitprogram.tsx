@@ -6,7 +6,6 @@ import Image from "next/image";
 
 interface ProgramItem {
   title: string;
-  description: string;
   detailContent?: string;
   Icon?: LucideIcon;
 }
@@ -113,7 +112,7 @@ export default function UnitProgram({ programs, theme = "blue", bgImage }: UnitP
                   </h3>
 
                   <p className="text-gray-600 text-xs sm:text-sm leading-relaxed font-light mb-6 line-clamp-3">
-                    {prog.description}
+                    
                   </p>
                 </div>
 
@@ -156,15 +155,7 @@ export default function UnitProgram({ programs, theme = "blue", bgImage }: UnitP
                 {selectedProgram.title}
               </h3>
 
-              <div className="space-y-4 text-gray-600 text-sm sm:text-base leading-relaxed max-h-[60vh] overflow-y-auto pr-2">
-                {selectedProgram.detailContent ? (
-                  selectedProgram.detailContent.split('\n\n').map((paragraph, i) => (
-                    <p key={i}>{paragraph}</p>
-                  ))
-                ) : (
-                  <p>{selectedProgram.description}</p>
-                )}
-              </div>
+             
 
               <div className="mt-8 pt-4 border-t border-gray-100 flex justify-end">
                 <button

@@ -54,7 +54,7 @@ export default function UnitProfile({ theme = "blue", profile, vision, missions 
         <div className="lg:col-span-5 flex justify-center">
           <div className="relative w-72 h-80 sm:w-80 sm:h-96 rounded-3xl overflow-hidden shadow-2xl border-4 border-gray-100 bg-gray-100 group">
             <Image 
-              src="/unit-smk.jpg" // Bisa disesuaikan dengan foto profil unit
+              src="/sekolah-bg.jpg" // Bisa disesuaikan dengan foto profil unit
               alt="Profil Madrasah"
               fill
               className="object-cover object-center group-hover:scale-105 transition duration-500"

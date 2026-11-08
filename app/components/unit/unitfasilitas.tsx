@@ -4,7 +4,6 @@ import { FaSchool, FaMosque, FaBasketballBall, FaUtensils, FaLaptop, FaChalkboar
 
 interface FasilitasItem {
   name: string;
-  desc: string;
   image?: string;
 }
 
@@ -121,7 +120,7 @@ export default function UnitFasilitas({ facilities, theme = "emerald" }: UnitFas
                       overflow: 'hidden'
                     }}
                   >
-                    {fac.desc}
+                    
                   </p>
                 </div>
               </div>

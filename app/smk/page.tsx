@@ -82,8 +82,15 @@ export default function SMKPage() {
       <UnitHero name={smkData.name} tagline={smkData.tagline} bgImage="/smkbg.png" theme="purple" />
       
       <ScrollReveal>
-        <div id="profil"><UnitProfile theme="purple" profile={smkData.profile} vision={smkData.vision} missions={smkData.missions} /></div>
-      </ScrollReveal>
+              <div id="profil">
+                <UnitProfile 
+                  theme="purple"
+                  profile={smkData.profile} 
+                  vision={smkData.vision} 
+                  missions={smkData.missions} 
+                />
+              </div>
+            </ScrollReveal>
 
       <ScrollReveal delay={0.1}>
         <UnitProgram programs={smkData.excellencePrograms} theme="purple" bgImage="/unit-smk.jpg" />

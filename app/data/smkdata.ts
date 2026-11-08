@@ -13,57 +13,65 @@ export const smkData = {
   category: "Sekolah Menengah Kejuruan",
   tagline: "Sekolah Kejuruan Siap Kerja — Vokasi Unggul, Kreatif, Kompeten, dan Berakhlakul Karimah.",
   profile: "SMK Hidayatut Thalibin merupakan lembaga pendidikan kejuruan formal di bawah naungan Yayasan Hidayatut Thalibin Jakarta Selatan. Kami berfokus mencetak lulusan siap kerja, berjiwa wirausaha, serta menguasai teknologi dan keahlian vokasi modern.",
-  vision: "Menjadi pusat pendidikan kejuruan yang menghasilkan lulusan kompeten, profesional, berkarakter islami, dan berdaya saing di dunia kerja.",
+  vision: "Menjadikan SMK HIDATHA sebagai lembaga unggul dan religius untuk menghasilkan lulusan yang siap bersaing dan berkontribusi positif dalam dunia bisnis dan masyarakat",
   missions: [
-    "Menyelenggarakan pendidikan kejuruan berbasis standar industri dan dunia usaha (DUDI).",
-    "Membekali peserta didik dengan keterampilan hard skills dan soft skills yang handal.",
-    "Menanamkan nilai-nilai keimanan, ketakwaan, serta etika profesi yang luhur.",
-    "Mengembangkan jiwa kewirausahaan (entrepreneurship) melalui unit produksi dan praktek mandiri."
+    "Menyelenggarakan pendidikan kerujuan berkualitas berbasis kompetensi",
+    "Mengintegrasikan nilai-nilai religius untuk membentuk karakter siswa",
+    "Meningkatkan keterampilan teknis dan soft skills siswa."
   ],
 
   excellencePrograms: [
     {
-      title: "Praktik Industri & Magang DUDI",
-      description: "Pengalaman kerja nyata langsung di perusahaan mitra terkemuka.",
+      title: "Akuntansi dan Keuangan Lmebaga",
       detailContent: "Setiap siswa wajib mengikuti program PKL di instansi atau perusahaan rekanan guna menyelaraskan kompetensi keahlian di dunia kerja nyata."
     },
     {
-      title: "Sertifikasi Kompetensi Resmi",
-      description: "Uji keahlian berstandar nasional bersertifikat BNSP / Industri.",
+      title: "Pemasaran",
       detailContent: "Memberikan pengakuan resmi atas keahlian vokasi yang dikuasai siswa sebelum kelulusan."
     },
     {
-      title: "Inkumbator Wirausaha Muda",
-      description: "Pelatihan bisnis digital, praktik mandiri, dan manajemen usaha.",
+      title: "Manajemen Perkantoran dan Layanan Bisnis",
       detailContent: "Mendorong siswa untuk memiliki jiwa kemandirian finansial dan inovasi produk kreatif."
-    },
-    {
-      title: "Bursa Kerja Khusus (BKK)",
-      description: "Fasilitas penyaluran kerja langsung bagi lulusan ke dunia industri.",
-      detailContent: "BKK sekolah aktif menjalin kerja sama dengan berbagai perusahaan untuk penyerapan tenaga kerja alumni."
     }
+  
   ],
 
   facilities: [
     { 
-      name: "Laboratorium Komputer & Jaringan Modern", 
-      desc: "Perangkat komputer spesifikasi tinggi untuk praktik pemrograman dan jaringan.",
-      image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80" 
+      name: "Laboratorium Komputer", 
+      image: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "Bengkel / Workshop Vokasi", 
-      desc: "Ruang praktik teknik dan kejuruan lengkap dengan peralatan standar industri.",
-      image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80" 
+      name: "Ruang Kelas Ber AC dan nyaman", 
+      image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "Perpustakaan Digital", 
-      desc: "Akses literasi referensi teknik, modul kejuruan, dan e-book lengkap.",
-      image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80" 
+      name: "Perpustakaan Lengkap", 
+      image: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "Aula & Ruang Pertemuan", 
-      desc: "Fasilitas serbaguna untuk seminar, workshop industri, dan kegiatan siswa.",
-      image: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=800&q=80" 
+      name: "Ekstraulikuler Unggulan", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Aula Serbaguna", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Bisnis Center", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Musholla", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Lapangan Olahraga Multifungsi", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Kantin Sekolah", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
     }
   ],
 

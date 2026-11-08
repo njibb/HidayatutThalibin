@@ -46,24 +46,40 @@ export const tkData = {
 
   facilities: [
     { 
-      name: "Ruang Kelas Full AC & Bermain Edukatif", 
-      desc: "Kelas bersih, nyaman, dilengkapi beragam mainan edukasi penunjang tumbuh kembang.",
-      image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80" 
+      name: "Laboratorium Komputer", 
+      image: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "Arena Outdoor Playground", 
-      desc: "Wahana ayunan, perosotan, dan area lari yang aman serta menyenangkan.",
-      image: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?auto=format&fit=crop&w=800&q=80" 
+      name: "Ruang Kelas Ber AC dan nyaman", 
+      image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "Ruang Audio Visual & Seni", 
-      desc: "Fasilitas pemutaran cerita edukatif, musik anak, dan perlengkapan melukis.",
-      image: "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&w=800&q=80" 
+      name: "Perpustakaan Lengkap", 
+      image: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "UKS & Ruang Istirahat", 
-      desc: "Fasilitas kesehatan khusus anak untuk penanganan darurat dan kenyamanan siswa.",
-      image: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80" 
+      name: "Ekstraulikuler Unggulan", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Aula Serbaguna", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Bisnis Center", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Musholla", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Lapangan Olahraga Multifungsi", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Kantin Sekolah", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
     }
   ],
 
