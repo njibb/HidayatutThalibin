@@ -60,14 +60,14 @@ export const mtsData = {
     }
   ],
 
- facilities: [
+  facilities: [
     { 
       name: "Laboratorium Komputer", 
       image: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=80" 
     },
     { 
       name: "Ruang Kelas Ber AC dan nyaman", 
-      image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80" 
+      image: "/kelas.jpeg" 
     },
     { 
       name: "Perpustakaan Lengkap", 
@@ -91,11 +91,11 @@ export const mtsData = {
     },
     { 
       name: "Lapangan Olahraga Multifungsi", 
-      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+      image: "/lapangan.jpeg" 
     },
     { 
       name: "Kantin Sekolah", 
-      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+      image: "/kantin.jpeg" 
     }
   ],
 

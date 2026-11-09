@@ -36,25 +36,29 @@ export const smkData = {
   
   ],
 
-  facilities: [
+   facilities: [
     { 
-      name: "Ruang Kelas Ber AC dan nyaman ", 
+      name: "Laboratorium Komputer", 
       image: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "Aula Serbaguna", 
-      image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80" 
+      name: "Ruang Kelas Ber AC dan nyaman", 
+      image: "/kelas.jpeg" 
     },
     { 
-      name: "Lapangan Olahraga Multifungsi", 
+      name: "Perpustakaan Lengkap", 
       image: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "Kantin Sekolah ", 
+      name: "Ekstraulikuler Unggulan", 
       image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: "Laboratorium Komputer", 
+      name: "Aula Serbaguna", 
+      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+    },
+    { 
+      name: "Bisnis Center", 
       image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
     },
     { 
@@ -62,15 +66,15 @@ export const smkData = {
       image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
     },
     { 
-      name: " Bisnis Center", 
-      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+      name: "Lapangan Olahraga Multifungsi", 
+      image: "/lapangan.jpeg" 
     },
     { 
-      name: "Perpustakaan Lengkap", 
-      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+      name: "Kantin Sekolah", 
+      image: "/kantin.jpeg" 
     }
   ],
-
+  
   beritaGallery: [
     {
       id: "1",

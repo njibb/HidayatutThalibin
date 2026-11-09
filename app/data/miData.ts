@@ -64,7 +64,7 @@ export const miData = {
     },
     { 
       name: "Ruang Kelas Ber AC dan nyaman", 
-      image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80" 
+      image: "/kelas.jpeg" 
     },
     { 
       name: "Perpustakaan Lengkap", 
@@ -88,11 +88,11 @@ export const miData = {
     },
     { 
       name: "Lapangan Olahraga Multifungsi", 
-      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+      image: "/lapangan.jpeg" 
     },
     { 
       name: "Kantin Sekolah", 
-      image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?auto=format&fit=crop&w=800&q=80" 
+      image: "/kantin.jpeg" 
     }
   ],
 
