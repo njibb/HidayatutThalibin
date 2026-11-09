@@ -14,25 +14,25 @@ export default function UnitSection() {
   const unitSlides = [
     {
       image: "/tkbg.png",
-      title: "TK Hidayatut Thalibin",
+      title: "TK Hidayatut Tholibin",
       caption: "Pendidikan anak usia dini yang ceria, kreatif, dan berbasis nilai-nilai keislaman.",
       link: "/tk",
     },
     {
       image: "/mibg.jpg",
-      title: "MI Hidayatut Thalibin",
+      title: "MI Hidayatut Tholibin",
       caption: "Membentuk fondasi ilmu pengetahuan umum dan agama yang kuat sejak usia sekolah dasar.",
       link: "/mi",
     },
     {
       image: "/mtsbg.jpg",
-      title: "MTs Hidayatut Thalibin",
+      title: "MTs Hidayatut Tholibin",
       caption: "Pendidikan menengah pertama yang menyeimbangkan kecerdasan intelektual dan spiritual.",
       link: "/mts",
     },
     {
       image: "/smkbg.png",
-      title: "SMK Hidayatut Thalibin",
+      title: "SMKS HIDATHA",
       caption: "Sekolah kejuruan siap kerja dengan keahlian vokasi modern dan berdaya saing tinggi.",
       link: "/smk",
     },

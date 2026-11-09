@@ -21,7 +21,7 @@ export default function Hero() {
         {/* Sisi Kiri: Judul Besar Nama Yayasan */}
         <div className="max-w-xl">
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-none drop-shadow-lg">
-            Hidayatut Thalibin
+            Hidayatut Tholibin
           </h1>
         </div>
 
