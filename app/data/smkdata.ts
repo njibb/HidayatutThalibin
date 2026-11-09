@@ -8,12 +8,12 @@ export interface BeritaGalleryItem {
 
 export const smkData = {
   name: "Sekolah Menengah Kejuruan Hidayatut Thalibin",
-  shortName: "SMK Hidayatut Thalibin",
+  shortName: "SMKS HIDATHA",
   code: "SMK",
   category: "Sekolah Menengah Kejuruan",
   tagline: "Sekolah Kejuruan Siap Kerja — Vokasi Unggul, Kreatif, Kompeten, dan Berakhlakul Karimah.",
-  profile: "SMK Hidayatut Thalibin merupakan lembaga pendidikan kejuruan formal di bawah naungan Yayasan Hidayatut Thalibin Jakarta Selatan. Kami berfokus mencetak lulusan siap kerja, berjiwa wirausaha, serta menguasai teknologi dan keahlian vokasi modern.",
-  vision: "Menjadikan SMK HIDATHA sebagai lembaga unggul dan religius untuk menghasilkan lulusan yang siap bersaing dan berkontribusi positif dalam dunia bisnis dan masyarakat",
+  profile: "SMKS HIDATHA merupakan lembaga pendidikan kejuruan formal di bawah naungan Yayasan Hidayatut Thalibin Jakarta Selatan. Kami berfokus mencetak lulusan siap kerja, berjiwa wirausaha, serta menguasai teknologi dan keahlian vokasi modern.",
+  vision: "Menjadikan SMKS HIDATHA sebagai lembaga unggul dan religius untuk menghasilkan lulusan yang siap bersaing dan berkontribusi positif dalam dunia bisnis dan masyarakat",
   missions: [
     "Menyelenggarakan pendidikan kerujuan berkualitas berbasis kompetensi",
     "Mengintegrasikan nilai-nilai religius untuk membentuk karakter siswa",
@@ -74,7 +74,7 @@ export const smkData = {
       image: "/kantin.jpeg" 
     }
   ],
-  
+
   beritaGallery: [
     {
       id: "1",

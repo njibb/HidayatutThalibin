@@ -7,12 +7,12 @@ export interface BeritaGalleryItem {
 }
 
 export const miData = {
-  name: "Madrasah Ibtidaiyah Hidayatut Thalibin",
-  shortName: "MI Hidayatut Thalibin",
+  name: "Madrasah Ibtidaiyah Hidayatut Tholibin",
+  shortName: "MI Hidayatut Tholibin",
   code: "MI",
   category: "Madrasah Ibtidaiyah (Setingkat SD)",
   tagline: "Merawat Tradisi Merespon Modernisasi",
-  profile: "Madrasah Ibtidaiyah (MI) Hidayatut Thalibin merupakan lembaga pendidikan formal setingkat Sekolah Dasar di bawah naungan Yayasan Hidayatut Thalibin Jakarta Selatan. MI Hidayatut Thalibin memadukan kurikulum nasional dengan pendalaman nilai-nilai keislaman yang kuat sejak usia dini.",
+  profile: "Madrasah Ibtidaiyah (MI) Hidayatut Tholibin merupakan lembaga pendidikan formal setingkat Sekolah Dasar di bawah naungan Yayasan Hidayatut Thalibin Jakarta Selatan. MI Hidayatut Thalibin memadukan kurikulum nasional dengan pendalaman nilai-nilai keislaman yang kuat sejak usia dini.",
   vision: "Mewujudkan Generasi Beriman dan Bertakwa, Cerdas, Kreatif, Berakhlak Mulia (CERIA)",
   missions: [
     "Mewujudkan generasi yang rajin dan khusuk beribadah kepada Tuhan yang maha esa meelalui kegiatan keagamaan.",
